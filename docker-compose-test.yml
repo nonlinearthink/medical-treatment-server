@@ -1,0 +1,31 @@
+# 开发环境
+
+version: "3"
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=766867
+    volumes:
+      # 使用前先更改路径，格式：[本地路径]:[容器内路径(一般不用改)]
+      - /Users/nonlinearthink/Server/guyunwenchuang/mysql/data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: always
+
+  redis:
+    image: redis:6.2.1
+    container_name: redis
+    environment:
+      - TZ=Asia/Shanghai
+      - LANG=en_US.UTF-8
+    volumes:
+      # 使用前先更改路径，格式：[本地路径]:[容器内路径(一般不用改)]
+      - /Users/nonlinearthink/Server/guyunwenchuang/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - /Users/nonlinearthink/Server/guyunwenchuang/redis/data:/data
+      - /Users/nonlinearthink/Server/guyunwenchuang/redis/logs:/logs
+    ports:
+      - "6379:6379"
+    command: redis-server /usr/local/etc/redis/redis.conf --requirepass 603879
+    restart: always
