@@ -1,6 +1,7 @@
 package com.example.server.entity;
 
-import lombok.Data;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.*;
 
 import java.sql.Timestamp;
 
@@ -10,11 +11,15 @@ import java.sql.Timestamp;
  * @author nonlinearthink
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class ConsultAsk {
 
     /**
      * 问诊id
      */
+    @TableId
     private String consultId;
 
     /**

@@ -1,6 +1,7 @@
 package com.example.server.entity;
 
-import lombok.Data;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.*;
 
 /**
  * 基础诊断表
@@ -8,11 +9,15 @@ import lombok.Data;
  * @author nonlinearthink
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class BaseDiagnosis {
 
     /**
      * 诊断标识
      */
+    @TableId
     private Integer diagnosisId;
 
     /**

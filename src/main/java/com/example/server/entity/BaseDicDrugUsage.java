@@ -1,6 +1,7 @@
 package com.example.server.entity;
 
-import lombok.Data;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.*;
 
 /**
  * 药品用法表
@@ -8,11 +9,15 @@ import lombok.Data;
  * @author nonlinearthink
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class BaseDicDrugUsage {
 
     /**
      * 项目代码
      */
+    @TableId
     private Integer itemCode;
 
     /**

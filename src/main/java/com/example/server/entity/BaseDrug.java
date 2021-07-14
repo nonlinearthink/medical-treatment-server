@@ -1,5 +1,8 @@
 package com.example.server.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.*;
+
 import java.math.BigDecimal;
 
 /**
@@ -7,11 +10,16 @@ import java.math.BigDecimal;
  *
  * @author nonlinearthink
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class BaseDrug {
 
     /**
      * 药品id
      */
+    @TableId
     private Integer drugId;
 
     /**

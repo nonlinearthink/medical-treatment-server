@@ -22,10 +22,12 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `base_account`;
 CREATE TABLE `base_account` (
-  `user_id` varchar(36) NOT NULL COMMENT '用户id',
+  `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户id',
+  `nick_name` varchar(32) NOT NULL COMMENT '用户昵称',
+  `avatar_url` varchar(168) NOT NULL COMMENT '用户头像',
   `user_type` char(2) NOT NULL COMMENT '用户类型，1居民，2医生',
   `mini_open_id` varchar(36) NOT NULL COMMENT '微信小程序openid',
-  `phone_no` varchar(16) NOT NULL COMMENT '手机号码',
+  `phone_no` varchar(16) DEFAULT NULL COMMENT '手机号码',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';

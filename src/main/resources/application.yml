@@ -5,3 +5,6 @@ spring:
     name: boot-server
   profiles:
     active: dev
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

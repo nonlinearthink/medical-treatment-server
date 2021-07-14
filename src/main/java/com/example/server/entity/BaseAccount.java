@@ -1,6 +1,8 @@
 package com.example.server.entity;
 
-import lombok.Data;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.*;
 
 import java.sql.Timestamp;
 
@@ -10,12 +12,26 @@ import java.sql.Timestamp;
  * @author nonlinearthink
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class BaseAccount {
 
     /**
      * 用户id
      */
-    private String userId;
+    @TableId(type = IdType.AUTO)
+    private Integer userId;
+
+    /**
+     * 用户昵称
+     */
+    private String nickName;
+
+    /**
+     * 用户头像
+     */
+    private String avatarUrl;
 
     /**
      * 用户类型，1居民，2医生
