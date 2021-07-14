@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
  * @author nonlinearthink
  */
 @Configuration
-public class BeanConfiguration {
+public class BeanConfigurer {
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {

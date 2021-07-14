@@ -13,7 +13,7 @@ redis:
     auth: 2
   host: localhost
   port: 6379
-  password: 603879
+  password: lncqekZ0Nk
   timeout: 1000
   pool:
     max-active: 100
@@ -23,4 +23,4 @@ redis:
 file:
   image:
     url-mapping: /image/
-    store-path: /Users/nonlinearthink/Documents/image/
+    store-path: /app/medicalCare/image/

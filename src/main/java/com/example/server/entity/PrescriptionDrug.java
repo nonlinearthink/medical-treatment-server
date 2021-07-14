@@ -1,5 +1,6 @@
 package com.example.server.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
@@ -19,18 +20,13 @@ public class PrescriptionDrug {
     /**
      * 处方药品标识
      */
-    @TableId
-    private String prescriptionDrugId;
-
-    /**
-     * 机构id
-     */
-    private String orgId;
+    @TableId(type = IdType.AUTO)
+    private Integer prescriptionDrugId;
 
     /**
      * 处方id
      */
-    private String prescriptionId;
+    private Integer prescriptionId;
 
     /**
      * 药品id
@@ -38,44 +34,14 @@ public class PrescriptionDrug {
     private Integer drugId;
 
     /**
-     * 药品名称
+     * 用药频次id
      */
-    private String drugName;
+    private Integer drugFrequencyId;
 
     /**
-     * 药品规格
+     * 药品用法id
      */
-    private String specification;
-
-    /**
-     * 一次剂量
-     */
-    private BigDecimal dose;
-
-    /**
-     * 剂量单位
-     */
-    private String doseUnit;
-
-    /**
-     * 用药频次代码
-     */
-    private Integer frequencyCode;
-
-    /**
-     * 用药频次
-     */
-    private String frequencyName;
-
-    /**
-     * 药品用法代码
-     */
-    private Integer usageCode;
-
-    /**
-     * 药品用法
-     */
-    private String usageName;
+    private Integer drugUsageId;
 
     /**
      * 用药天数

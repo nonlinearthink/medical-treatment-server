@@ -1,5 +1,6 @@
 package com.example.server.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
@@ -19,18 +20,13 @@ public class PrescriptionInfo {
     /**
      * 处方id
      */
-    @TableId
-    private String prescriptionId;
+    @TableId(type = IdType.AUTO)
+    private Integer prescriptionId;
 
     /**
      * 机构id
      */
     private String orgId;
-
-    /**
-     * 患者id
-     */
-    private String userId;
 
     /**
      * 问诊id
@@ -46,11 +42,6 @@ public class PrescriptionInfo {
      * 开方医生id
      */
     private String doctorId;
-
-    /**
-     * 开方医生姓名
-     */
-    private Character doctorName;
 
     /**
      * 开方时间

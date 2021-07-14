@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
 /**
- * 药品用法表
+ * 照片表
  *
  * @author nonlinearthink
  */
@@ -13,17 +13,18 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class BaseDicDrugUsage {
+public class Photo {
 
     /**
-     * 药品用法id
+     * 照片id
      */
     @TableId(type = IdType.AUTO)
-    private Integer drugUsageId;
+    private Integer photoId;
 
     /**
-     * 药品用法名称
+     * 照片地址
      */
-    private String drugUsageName;
+    private String photoUrl;
+
 
 }

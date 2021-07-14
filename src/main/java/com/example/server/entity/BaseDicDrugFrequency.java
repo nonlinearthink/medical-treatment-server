@@ -1,5 +1,6 @@
 package com.example.server.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
@@ -15,19 +16,19 @@ import lombok.*;
 public class BaseDicDrugFrequency {
 
     /**
-     * 项目代码
+     * 药品频次id
      */
-    @TableId
-    private Integer itemCode;
+    @TableId(type = IdType.AUTO)
+    private Integer drugFrequencyId;
 
     /**
-     * 项目名称
+     * 药品频次名称
      */
-    private String itemName;
+    private String drugFrequencyName;
 
     /**
-     * 项目名称缩写
+     * 药品频次名称缩写
      */
-    private String itemNameAbbr;
+    private String drugFrequencyNameAbbr;
 
 }

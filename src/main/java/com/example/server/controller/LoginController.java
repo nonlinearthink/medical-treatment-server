@@ -5,14 +5,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.server.entity.BaseAccount;
 import com.example.server.mapper.BaseAccountMapper;
 import com.example.server.util.JwtUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +25,7 @@ import java.util.Map;
  */
 @RestController
 @Slf4j
+@RequestMapping("/api/login")
 public class LoginController {
 
     final String MINI_LOGIN_API = "https://api.weixin.qq.com/sns/jscode2session";
@@ -35,6 +39,8 @@ public class LoginController {
 
     private final BaseAccountMapper baseAccountMapper;
     private final RestTemplate restTemplate;
+    @Resource(name = "authRedisTemplate")
+    private StringRedisTemplate authRedisTemplate;
 
     @Autowired
     public LoginController(BaseAccountMapper baseAccountMapper, RestTemplate restTemplate) {
@@ -42,11 +48,12 @@ public class LoginController {
         this.restTemplate = restTemplate;
     }
 
+    @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
-    @PostMapping("mini/{userType}/login")
+    @PostMapping("/miniprogram/{userType}")
     public ResponseEntity<Map<String, Object>> login(@RequestParam(value = "code") String code,
                                                      @RequestBody Map<String, String> rawData,
-                                                     @PathVariable String userType) throws Exception {
+                                                     @PathVariable String userType) {
         // 请求openid和sessionKey
         log.info("微信小程序登录请求");
         String uri = UriComponentsBuilder
@@ -88,6 +95,7 @@ public class LoginController {
         String token = JwtUtil.createToken(claims);
         log.info("生成token: " + token);
         // 返回结果
+        authRedisTemplate.opsForValue().set(token, baseAccount.getUserId().toString());
         Map<String, Object> result = new HashMap<>(2);
         result.put("token", token);
         result.put("userId", baseAccount.getUserId());
