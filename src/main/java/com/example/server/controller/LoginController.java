@@ -2,6 +2,8 @@ package com.example.server.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.server.dto.MiniProgramLoginRawData;
+import com.example.server.dto.MiniProgramLoginResponse;
 import com.example.server.entity.BaseAccount;
 import com.example.server.mapper.BaseAccountMapper;
 import com.example.server.util.JwtUtil;
@@ -21,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 登录业务
+ *
  * @author nonlinearthink
  */
 @RestController
@@ -48,12 +52,20 @@ public class LoginController {
         this.restTemplate = restTemplate;
     }
 
+    /**
+     * 微信小程序登录
+     *
+     * @param code     wx.login()获取的code
+     * @param rawData  用户信息
+     * @param userType 用户类型，可选值为user和doctor
+     * @return token证书
+     */
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("/miniprogram/{userType}")
-    public ResponseEntity<Map<String, Object>> login(@RequestParam(value = "code") String code,
-                                                     @RequestBody Map<String, String> rawData,
-                                                     @PathVariable String userType) {
+    public ResponseEntity<MiniProgramLoginResponse> login(@RequestParam(value = "code") String code,
+                                                          @RequestBody MiniProgramLoginRawData rawData,
+                                                          @PathVariable String userType) {
         // 请求openid和sessionKey
         log.info("微信小程序登录请求");
         String uri = UriComponentsBuilder
@@ -78,11 +90,11 @@ public class LoginController {
         System.out.println(baseAccount);
         if (baseAccount == null) {
             baseAccount = BaseAccount.builder()
-                    .nickName(rawData.get("nickName"))
-                    .avatarUrl(rawData.get("avatarUrl"))
+                    .nickName(rawData.getNickName())
+                    .avatarUrl(rawData.getAvatarUrl())
                     .userType(userTypeMap.get(userType))
                     .miniOpenId(openid)
-                    .phoneNo(rawData.get("phoneNo"))
+                    .phoneNo(rawData.getPhoneNo())
                     .createTime(new Timestamp(System.currentTimeMillis()))
                     .build();
             baseAccountMapper.insert(baseAccount);
@@ -96,10 +108,7 @@ public class LoginController {
         log.info("生成token: " + token);
         // 返回结果
         authRedisTemplate.opsForValue().set(token, baseAccount.getUserId().toString());
-        Map<String, Object> result = new HashMap<>(2);
-        result.put("token", token);
-        result.put("userId", baseAccount.getUserId());
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(MiniProgramLoginResponse.builder().token(token).userId(baseAccount.getUserId()).build());
     }
 
 }

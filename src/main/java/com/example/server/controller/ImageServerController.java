@@ -1,6 +1,6 @@
 package com.example.server.controller;
 
-import com.example.server.entity.Base64File;
+import com.example.server.dto.Base64File;
 import com.example.server.entity.Photo;
 import com.example.server.mapper.PhotoMapper;
 import lombok.SneakyThrows;
@@ -18,6 +18,8 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 /**
+ * 图片服务器业务
+ *
  * @author nonlinearthink
  */
 @RestController
@@ -41,25 +43,37 @@ public class ImageServerController {
         this.photoMapper = photoMapper;
     }
 
+    /**
+     * 上传图片（fromData上传）
+     *
+     * @param file 一个前端的 File 对象
+     * @return 图片ID+图片地址
+     */
     @SneakyThrows
     @PostMapping("upload/normal")
-    public ResponseEntity<Photo> uploadNormalImage(@RequestParam(value = "file") MultipartFile image) {
-        String fileName = image.getOriginalFilename();
+    public ResponseEntity<Photo> uploadNormalImage(@RequestParam(value = "file") MultipartFile file) {
+        String fileName = file.getOriginalFilename();
         fileName = UUID.randomUUID().toString().replace("-", "") + (fileName != null ?
                 fileName.substring(fileName.lastIndexOf(".")) : null);
         File dest = new File(this.imageStorePath + fileName);
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
         }
-        image.transferTo(dest);
+        file.transferTo(dest);
         Photo photo = Photo.builder().photoUrl(host + this.imageUrlMapping + fileName).build();
         photoMapper.insert(photo);
         return ResponseEntity.ok().body(photo);
     }
 
+    /**
+     * 上传图片（Base64编码）
+     *
+     * @param base64File Base64图片对象
+     * @return 图片ID+图片地址
+     */
     @SneakyThrows
     @PostMapping("upload/base64")
-    public ResponseEntity<String> uploadBase64Image(@RequestBody Base64File base64File) {
+    public ResponseEntity<Photo> uploadBase64Image(@RequestBody Base64File base64File) {
         String suffix = "";
         switch (base64File.getFileType()) {
             case "image/jpg":
@@ -87,7 +101,25 @@ public class ImageServerController {
         out.write(b);
         out.flush();
         out.close();
-        return ResponseEntity.ok().body(host + this.imageUrlMapping + fileName);
+        Photo photo = Photo.builder().photoUrl(host + this.imageUrlMapping + fileName).build();
+        photoMapper.insert(photo);
+        return ResponseEntity.ok().body(photo);
+    }
+
+    /**
+     * 根据图片ID获取图片地址
+     *
+     * @param photoId 图片ID
+     * @return 图片ID+图片地址
+     */
+    @GetMapping("{id}")
+    public ResponseEntity<Photo> getPhotoById(@PathVariable(value = "id") Integer photoId) {
+        Photo photo = photoMapper.selectById(photoId);
+        if (photo != null) {
+            return ResponseEntity.ok().body(photo);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
