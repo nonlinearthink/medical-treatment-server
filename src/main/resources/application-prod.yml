@@ -22,5 +22,6 @@ redis:
     max-wait: -1
 file:
   image:
+    host: http://47.98.219.27:9000
     url-mapping: /image/
     store-path: /app/medicalCare/image/

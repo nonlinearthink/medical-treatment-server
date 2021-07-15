@@ -22,5 +22,6 @@ redis:
     max-wait: -1
 file:
   image:
+    host: http://localhost:9000
     url-mapping: /image/
     store-path: /Users/nonlinearthink/Documents/image/
