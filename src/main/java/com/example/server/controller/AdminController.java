@@ -20,13 +20,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * 管理管理员业务
+ * 管理员管理业务
  *
  * @author nonlinearthink
  */
 @RestController
 @Slf4j
-@RequestMapping("/api")
+@RequestMapping("/api/admin")
 public class AdminController {
 
     @Resource(name = "authRedisTemplate")
@@ -48,8 +48,8 @@ public class AdminController {
      */
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
-    @PostMapping("/admin")
-    public ResponseEntity<String> addAdmin(@RequestAttribute(name = "admin_id") String creatorId,
+    @PostMapping("")
+    public ResponseEntity<String> createAdmin(@RequestAttribute(name = "admin_id") String creatorId,
                                            @RequestParam(value = "adminId") String adminId,
                                            @RequestParam(value = "password") String password) {
         log.info("添加管理员请求");
@@ -73,7 +73,7 @@ public class AdminController {
             admin.setDeleteMark(false);
             baseAdminMapper.updateById(admin);
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("管理员已存在");
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("管理员已存在");
         }
         return ResponseEntity.ok("创建成功");
     }
@@ -87,7 +87,7 @@ public class AdminController {
      */
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
-    @DeleteMapping("/admin/{adminId}")
+    @DeleteMapping("/{adminId}")
     public ResponseEntity<String> deleteAdmin(@RequestAttribute(name = "admin_id") String operatorId,
                                               @PathVariable(value = "adminId") String adminId) {
         log.info("删除管理员请求");
@@ -115,7 +115,7 @@ public class AdminController {
      */
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
-    @PutMapping("/admin/{adminId}")
+    @PutMapping("/{adminId}")
     public ResponseEntity<String> updateType(@RequestAttribute(name = "admin_id") String operatorId,
                                              @PathVariable(value = "adminId") String adminId,
                                              @RequestParam(value = "adminType") Character adminType) {
@@ -144,7 +144,7 @@ public class AdminController {
      */
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
-    @PutMapping("/admin/{adminId}/password")
+    @PutMapping("/{adminId}/password")
     public ResponseEntity<String> resetPassword(@RequestAttribute(name = "admin_id") String operatorId,
                                                 @PathVariable(value = "adminId") String adminId,
                                                 @RequestParam(value = "password") String password) {
@@ -174,7 +174,7 @@ public class AdminController {
      */
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
-    @PutMapping("/admin/password")
+    @PutMapping("/password")
     public ResponseEntity<String> updatePassword(@RequestAttribute(name = "admin_id") String adminId,
                                                  @RequestParam(value = "oldPassword") String oldPassword,
                                                  @RequestParam(value = "newPassword") String newPassword) {
@@ -200,7 +200,7 @@ public class AdminController {
      * @return 脱敏的管理员列表数据
      */
     @SneakyThrows
-    @GetMapping("/admin")
+    @GetMapping("")
     public ResponseEntity<List<MaskedAdmin>> queryAllAdmin(@RequestParam(value = "number") Integer number,
                                                            @RequestParam(value = "size") Integer size) {
         log.info("查询所有管理员请求");

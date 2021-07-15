@@ -27,7 +27,7 @@ CREATE TABLE `base_admin`
     `password`    varchar(32) NOT NULL COMMENT '管理员密码',
     `admin_type`  char(2)     NOT NULL COMMENT '管理员类型，1超级管理员，2普通管理员',
     `create_time` datetime    NOT NULL COMMENT '创建时间',
-    `delete_mark` boolean      DEFAULT FALSE COMMENT '软删除标记',
+    `delete_mark` boolean DEFAULT FALSE COMMENT '软删除标记',
     PRIMARY KEY (`admin_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='管理员表';
@@ -69,8 +69,10 @@ COMMIT;
 DROP TABLE IF EXISTS `base_org`;
 CREATE TABLE `base_org`
 (
-    `org_id`   int(11)     NOT NULL AUTO_INCREMENT COMMENT '机构id',
-    `org_name` varchar(64) NOT NULL COMMENT '机构名称',
+    `org_id`      int(11)     NOT NULL AUTO_INCREMENT COMMENT '机构id',
+    `org_name`    varchar(64) NOT NULL COMMENT '机构名称',
+    `creator_id`  varchar(32) NOT NULL COMMENT '创建者ID',
+    `delete_mark` boolean DEFAULT FALSE COMMENT '软删除标记',
     PRIMARY KEY (`org_id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 2
@@ -81,7 +83,7 @@ CREATE TABLE `base_org`
 -- ----------------------------
 BEGIN;
 INSERT INTO `base_org`
-VALUES (1, '创业惠康医院');
+VALUES (1, '创业惠康医院', 'root', FALSE);
 COMMIT;
 
 -- ----------------------------
@@ -90,9 +92,11 @@ COMMIT;
 DROP TABLE IF EXISTS `base_dept`;
 CREATE TABLE `base_dept`
 (
-    `dept_id`   int(11)     NOT NULL AUTO_INCREMENT COMMENT '科室id',
-    `dept_name` varchar(64) NOT NULL COMMENT '科室名称',
-    `org_id`    int(64)     NOT NULL COMMENT '机构id',
+    `dept_id`     int(11)     NOT NULL AUTO_INCREMENT COMMENT '科室id',
+    `dept_name`   varchar(64) NOT NULL COMMENT '科室名称',
+    `org_id`      int(64)     NOT NULL COMMENT '机构id',
+    `creator_id`  varchar(32) NOT NULL COMMENT '创建者ID',
+    `delete_mark` boolean DEFAULT FALSE COMMENT '软删除标记',
     PRIMARY KEY (`dept_id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 16
@@ -103,33 +107,33 @@ CREATE TABLE `base_dept`
 -- ----------------------------
 BEGIN;
 INSERT INTO `base_dept`
-VALUES (1, '急诊内科', 1);
+VALUES (1, '急诊内科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (2, '急诊外科', 1);
+VALUES (2, '急诊外科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (4, '呼吸科', 1);
+VALUES (4, '呼吸科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (5, '消化科', 1);
+VALUES (5, '消化科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (6, '内分泌科', 1);
+VALUES (6, '内分泌科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (7, '风湿免疫科', 1);
+VALUES (7, '风湿免疫科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (8, '皮肤科', 1);
+VALUES (8, '皮肤科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (9, '肿瘤科', 1);
+VALUES (9, '肿瘤科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (10, '神经内科', 1);
+VALUES (10, '神经内科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (11, '神经外科', 1);
+VALUES (11, '神经外科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (12, '儿科', 1);
+VALUES (12, '儿科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (13, '检验科', 1);
+VALUES (13, '检验科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (14, '影像科', 1);
+VALUES (14, '影像科', 1, 'root', FALSE);
 INSERT INTO `base_dept`
-VALUES (15, '超声科', 1);
+VALUES (15, '超声科', 1, 'root', FALSE);
 COMMIT;
 
 -- ----------------------------

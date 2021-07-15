@@ -2,8 +2,8 @@ let api = [];
 api.push({
     alias: 'api',
     order: '1',
-    desc: '管理管理员业务',
-    link: '管理管理员业务',
+    desc: '管理员管理业务',
+    link: '管理员管理业务',
     list: []
 })
 api[0].list.push({
@@ -31,42 +31,88 @@ api[0].list.push({
     desc: '管理员查询所有管理员（分页）',
 });
 api.push({
-    alias: 'ImageServerController',
+    alias: 'OrgController',
     order: '2',
+    desc: '机构管理业务',
+    link: '机构管理业务',
+    list: []
+})
+api[1].list.push({
+    order: '1',
+    desc: '管理员创建机构',
+});
+api[1].list.push({
+    order: '2',
+    desc: '管理员删除机构',
+});
+api[1].list.push({
+    order: '3',
+    desc: '更新机构名称',
+});
+api[1].list.push({
+    order: '4',
+    desc: '查询所有机构（分页、需携带token）',
+});
+api.push({
+    alias: 'ImageServerController',
+    order: '3',
     desc: '图片服务器业务',
     link: '图片服务器业务',
     list: []
 })
-api[1].list.push({
+api[2].list.push({
     order: '1',
     desc: '上传图片（fromData上传）',
 });
-api[1].list.push({
+api[2].list.push({
     order: '2',
     desc: '上传图片（Base64编码）',
 });
-api[1].list.push({
+api[2].list.push({
     order: '3',
     desc: '根据图片ID获取图片地址',
 });
 api.push({
-    alias: 'LoginController',
+    alias: 'DeptController',
+    order: '4',
+    desc: '科室管理业务',
+    link: '科室管理业务',
+    list: []
+})
+api[3].list.push({
+    order: '1',
+    desc: '管理员创建科室',
+});
+api[3].list.push({
+    order: '2',
+    desc: '管理员删除科室',
+});
+api[3].list.push({
     order: '3',
+    desc: '管理员更新科室信息',
+});
+api[3].list.push({
+    order: '4',
+    desc: '查询所有科室（分页、需携带token）',
+});
+api.push({
+    alias: 'LoginController',
+    order: '5',
     desc: '登录业务',
     link: '登录业务',
     list: []
 })
-api[2].list.push({
+api[4].list.push({
     order: '1',
     desc: '微信小程序登录',
 });
-api[2].list.push({
+api[4].list.push({
     order: '2',
     desc: '管理员登录',
 });
 api.push({
     alias: 'dict',
-    order: '4',
+    order: '6',
     desc: '数据字典',
     link: 'dict_list',
     list: []
