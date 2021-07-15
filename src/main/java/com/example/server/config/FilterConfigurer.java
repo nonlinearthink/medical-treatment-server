@@ -17,7 +17,7 @@ public class FilterConfigurer {
     public FilterRegistrationBean<Filter> filterRegistrationBean() {
         FilterRegistrationBean<Filter> bean = new FilterRegistrationBean<Filter>();
         bean.setFilter(getAuthFilter());
-        bean.addUrlPatterns("/api/test/*");
+        bean.addUrlPatterns("/api/test/*", "/api/admin/*");
         bean.setName("AuthFilter");
         return bean;
     }

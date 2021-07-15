@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author nonlinearthink
@@ -27,12 +28,19 @@ public class AuthFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         String token = req.getHeader("token");
+        log.info("携带的token: " + token);
         if (token != null) {
-            String userId = authRedisTemplate.opsForValue().get(token);
             Map<String, String> data = JwtUtil.verifyToken(token);
-            if (userId != null && userId.equals(data.get("user_id"))) {
-                req.setAttribute("user_id", userId);
+            if (data.get("user_id") != null && Objects.equals(authRedisTemplate.opsForValue().get("wechat@" + data.get("user_id")), token)) {
+                log.info("token解析结果: user_id " + data.get("user_id") + " session_key " + data.get("session_key"));
+                req.setAttribute("user_id", data.get("user_id"));
                 req.setAttribute("session_key", data.get("session_key"));
+                filterChain.doFilter(servletRequest, servletResponse);
+                return;
+            } else if (data.get("admin_id") != null &&
+                    Objects.equals(authRedisTemplate.opsForValue().get("admin@" + data.get("admin_id")), token)) {
+                log.info("token解析结果: admin_id " + data.get("admin_id"));
+                req.setAttribute("admin_id", data.get("admin_id"));
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }

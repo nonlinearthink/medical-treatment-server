@@ -18,18 +18,41 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
+-- Table structure for base_admin
+-- ----------------------------
+DROP TABLE IF EXISTS `base_admin`;
+CREATE TABLE `base_admin`
+(
+    `admin_id`    varchar(32) NOT NULL COMMENT '管理员id',
+    `password`    varchar(32) NOT NULL COMMENT '管理员密码',
+    `admin_type`  char(2)     NOT NULL COMMENT '管理员类型，1超级管理员，2普通管理员',
+    `create_time` datetime    NOT NULL COMMENT '创建时间',
+    `delete_mark` boolean      DEFAULT FALSE COMMENT '软删除标记',
+    PRIMARY KEY (`admin_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='管理员表';
+
+-- ----------------------------
+-- Records of base_account
+-- ----------------------------
+BEGIN;
+INSERT INTO `base_admin`
+VALUES ('root', 'e10adc3949ba59abbe56e057f20f883e', '1', NOW(), FALSE);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for base_account
 -- ----------------------------
 DROP TABLE IF EXISTS `base_account`;
 CREATE TABLE `base_account`
 (
-    `user_id`      int(11)      NOT NULL AUTO_INCREMENT COMMENT '用户id',
-    `nick_name`    varchar(32)  NOT NULL COMMENT '用户昵称',
-    `avatar_url`   varchar(168) NOT NULL COMMENT '用户头像',
-    `user_type`    char(2)      NOT NULL COMMENT '用户类型，1居民，2医生',
-    `mini_open_id` varchar(36)  NOT NULL COMMENT '微信小程序openid',
-    `phone_no`     varchar(16) DEFAULT NULL COMMENT '手机号码',
-    `create_time`  datetime     NOT NULL COMMENT '创建时间',
+    `user_id`      int(11)     NOT NULL AUTO_INCREMENT COMMENT '用户id',
+    `nick_name`    varchar(32) NOT NULL COMMENT '用户昵称',
+    `avatar_url`   varchar(168) DEFAULT NULL COMMENT '用户头像',
+    `user_type`    char(2)     NOT NULL COMMENT '用户类型，1居民，2医生',
+    `mini_open_id` varchar(36) NOT NULL COMMENT '微信小程序openid',
+    `phone_no`     varchar(16)  DEFAULT NULL COMMENT '手机号码',
+    `create_time`  datetime    NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`user_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='用户表';

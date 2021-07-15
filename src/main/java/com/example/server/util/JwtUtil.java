@@ -26,7 +26,7 @@ public class JwtUtil {
     public static String createToken(Map<String, String> claims) throws Exception {
         try {
             Algorithm algorithm = Algorithm.HMAC256(SECRET);
-            JWTCreator.Builder builder = JWT.create();
+            JWTCreator.Builder builder = JWT.create().withIssuer(ISSUER);
             claims.forEach(builder::withClaim);
             return builder.sign(algorithm);
         } catch (IllegalArgumentException  e) {

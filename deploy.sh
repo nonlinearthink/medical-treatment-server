@@ -1,6 +1,7 @@
 echo "清除上次的打包文件"
 rm -r target/server-*
 ssh aliyun "rm -r server-*.jar; echo '远程服务器文件目录:'; ls"
+mvn clean
 echo "生成API文档"
 mvn -Dfile.encoding=UTF-8 smart-doc:html
 echo "打包"
