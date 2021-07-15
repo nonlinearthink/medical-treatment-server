@@ -47,7 +47,7 @@ api[1].list.push({
 });
 api[1].list.push({
     order: '3',
-    desc: '更新机构名称',
+    desc: '管理员更新机构名称',
 });
 api[1].list.push({
     order: '4',

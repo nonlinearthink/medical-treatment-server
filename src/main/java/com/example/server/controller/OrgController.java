@@ -87,7 +87,7 @@ public class OrgController {
     }
 
     /**
-     * 更新机构名称
+     * 管理员更新机构名称
      *
      * @param operatorId 操作者ID，从token中获取，请携带token，需是管理员
      * @param orgId      机构id
