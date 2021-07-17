@@ -46,4 +46,14 @@ public class BaseDoctor {
      */
     private String levelName;
 
+    /**
+     * 创建的用户id
+     */
+    private Integer creatorId;
+
+    /**
+     * 软删除标记
+     */
+    private Boolean deleteMark;
+
 }

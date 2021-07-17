@@ -1,27 +1,17 @@
-package com.example.server.entity;
+package com.example.server.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
 import java.sql.Timestamp;
 
 /**
- * 问诊人表
- *
  * @author nonlinearthink
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class BasePatient {
-
-    /**
-     * 问诊人id
-     */
-    @TableId(type = IdType.AUTO)
-    private Integer patientId;
+public class PatientDataRequest {
 
     /**
      * 问诊人姓名
@@ -49,23 +39,8 @@ public class BasePatient {
     private Timestamp patientBirthDate;
 
     /**
-     * 问诊人年龄
-     */
-    private Integer patientBirthAge;
-
-    /**
      * 问诊人手机号码
      */
     private String patientPhoneNo;
-
-    /**
-     * 创建用户id
-     */
-    private Integer creatorId;
-
-    /**
-     * 软删除标记
-     */
-    private Boolean deleteMark;
 
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 科室管理业务
+ * 科室管理与查询业务
  *
  * @author nonlinearthink
  */
@@ -79,8 +79,8 @@ public class DeptController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("权限不足");
         }
         BaseDept dept = baseDeptMapper.selectById(deptId);
-        if (dept == null) {
-            return ResponseEntity.ok("机构不存在");
+        if (dept == null || dept.getDeleteMark()) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("机构不存在");
         } else {
             dept.setDeleteMark(true);
             baseDeptMapper.updateById(dept);
@@ -107,7 +107,7 @@ public class DeptController {
         }
         BaseDept dept = baseDeptMapper.selectById(deptId);
         if (dept == null || dept.getDeleteMark()) {
-            return ResponseEntity.ok("科室不存在");
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("科室不存在");
         } else {
             dept.setDeptName(deptName);
             baseDeptMapper.updateById(dept);
@@ -130,11 +130,12 @@ public class DeptController {
                                                        @RequestParam(value = "size") Integer size) {
         log.info("查询所有科室请求");
         List<BaseDept> deptList;
+        QueryWrapper<BaseDept> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("delete_mark", false);
         if (orgId == null) {
-            deptList = baseDeptMapper.selectByPage(new Page<>(number, size));
+            deptList = baseDeptMapper.selectByPageConditional(new Page<>(number, size), queryWrapper);
         } else {
             log.info("查询单个机构下的所有请求: " + orgId);
-            QueryWrapper<BaseDept> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("org_id", orgId);
             deptList = baseDeptMapper.selectByPageConditional(new Page<>(number, size), queryWrapper);
         }

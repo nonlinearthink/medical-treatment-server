@@ -41,5 +41,4 @@ public class BaseDept {
      */
     private Boolean deleteMark;
 
-
 }

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.server.entity.BaseOrg;
+import com.example.server.entity.DeptDoctor;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -15,25 +15,26 @@ import java.util.List;
  * @author nonlinearthink
  */
 @Mapper
-public interface BaseOrgMapper extends BaseMapper<BaseOrg> {
+public interface DeptDoctorMapper extends BaseMapper<DeptDoctor> {
 
     /**
-     * 分页查找机构列表
+     * 分页查找医生列表
      *
      * @param page 分页
-     * @return 机构列表
+     * @return 医生列表
      */
-    @Select("select * from base_org")
-    List<BaseOrg> selectByPage(Page<BaseOrg> page);
+    @Select("select * from dept_doctor")
+    List<DeptDoctor> selectByPage(Page<DeptDoctor> page);
 
     /**
-     * 分页按条件查找机构列表
+     * 分页按条件查找医生列表
      *
      * @param page    分页
      * @param wrapper 条件构造器
-     * @return 机构列表
+     * @return 医生列表
      */
-    @Select("select * from base_org ${ew.customSqlSegment}")
-    List<BaseOrg> selectByPageConditional(Page<BaseOrg> page, @Param(Constants.WRAPPER) Wrapper<BaseOrg> wrapper);
+    @Select("select * from dept_doctor ${ew.customSqlSegment}")
+    List<DeptDoctor> selectByPageConditional(Page<DeptDoctor> page,
+                                             @Param(Constants.WRAPPER) Wrapper<DeptDoctor> wrapper);
 
 }

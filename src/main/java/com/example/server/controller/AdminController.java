@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * 管理员管理业务
+ * 管理员管理与查询业务
  *
  * @author nonlinearthink
  */

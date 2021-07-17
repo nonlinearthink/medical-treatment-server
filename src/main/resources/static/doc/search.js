@@ -2,8 +2,8 @@ let api = [];
 api.push({
     alias: 'api',
     order: '1',
-    desc: '管理员管理业务',
-    link: '管理员管理业务',
+    desc: '管理员管理与查询业务',
+    link: '管理员管理与查询业务',
     list: []
 })
 api[0].list.push({
@@ -33,8 +33,8 @@ api[0].list.push({
 api.push({
     alias: 'OrgController',
     order: '2',
-    desc: '机构管理业务',
-    link: '机构管理业务',
+    desc: '机构管理与查询业务',
+    link: '机构管理与查询业务',
     list: []
 })
 api[1].list.push({
@@ -73,46 +73,104 @@ api[2].list.push({
     desc: '根据图片ID获取图片地址',
 });
 api.push({
-    alias: 'DeptController',
+    alias: 'DoctorController',
     order: '4',
-    desc: '科室管理业务',
-    link: '科室管理业务',
+    desc: '医生管理与查询业务',
+    link: '医生管理与查询业务',
     list: []
 })
 api[3].list.push({
     order: '1',
-    desc: '管理员创建科室',
+    desc: '医生端创建医生（绑定医生）',
 });
 api[3].list.push({
     order: '2',
-    desc: '管理员删除科室',
+    desc: '医生端删除医生（解除绑定）',
 });
 api[3].list.push({
     order: '3',
-    desc: '管理员更新科室信息',
+    desc: '医生端更新医生',
 });
 api[3].list.push({
+    order: '4',
+    desc: '查询医生列表（分页、需携带token）',
+});
+api[3].list.push({
+    order: '5',
+    desc: '医生端查询绑定的医生',
+});
+api[3].list.push({
+    order: '6',
+    desc: '根据ID查询医生数据（需携带token）',
+});
+api.push({
+    alias: 'DeptController',
+    order: '5',
+    desc: '科室管理与查询业务',
+    link: '科室管理与查询业务',
+    list: []
+})
+api[4].list.push({
+    order: '1',
+    desc: '管理员创建科室',
+});
+api[4].list.push({
+    order: '2',
+    desc: '管理员删除科室',
+});
+api[4].list.push({
+    order: '3',
+    desc: '管理员更新科室信息',
+});
+api[4].list.push({
     order: '4',
     desc: '查询所有科室（分页、需携带token）',
 });
 api.push({
-    alias: 'LoginController',
+    alias: 'PatientController',
+    order: '6',
+    desc: '问诊人管理与查询业务',
+    link: '问诊人管理与查询业务',
+    list: []
+})
+api[5].list.push({
+    order: '1',
+    desc: '用户端创建问诊人（绑定）',
+});
+api[5].list.push({
+    order: '2',
+    desc: '用户端删除问诊人（解绑）',
+});
+api[5].list.push({
+    order: '3',
+    desc: '用户端更新问诊人信息',
+});
+api[5].list.push({
+    order: '4',
+    desc: '根据问诊人id查询问诊人信息',
+});
+api[5].list.push({
     order: '5',
+    desc: '用户端获取自己创建的问诊人列表',
+});
+api.push({
+    alias: 'LoginController',
+    order: '7',
     desc: '登录业务',
     link: '登录业务',
     list: []
 })
-api[4].list.push({
+api[6].list.push({
     order: '1',
     desc: '微信小程序登录',
 });
-api[4].list.push({
+api[6].list.push({
     order: '2',
     desc: '管理员登录',
 });
 api.push({
     alias: 'dict',
-    order: '6',
+    order: '8',
     desc: '数据字典',
     link: 'dict_list',
     list: []

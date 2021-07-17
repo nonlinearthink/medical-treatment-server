@@ -10,8 +10,8 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 mini-program:
   user:
-    appid: wxdc77479836a295c3
-    secret: 77f8448883bfe693fcd05c8188e3e62e
+    appid: wx045ddd6290468a53
+    secret: 906e74da16c319b7f7a9768d1c5ec640
   doctor:
     appid: wxbcb506cbd018cd24
     secret: 1327e89037a3ee04c1ddb9b54f9ae803

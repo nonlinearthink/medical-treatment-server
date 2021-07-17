@@ -158,6 +158,8 @@ CREATE TABLE `base_doctor`
     `level_code`  char(2)      DEFAULT NULL COMMENT '医生职称，1主任医师，2副主任医师，3主治医师，4医师，5医士',
     `level_name`  varchar(32)  DEFAULT NULL COMMENT '医生职称，1主任医师，2副主任医师，3主治医师，4医师，5医士',
     `dept_id`     int(11)     NOT NULL COMMENT '科室id',
+    `creator_id`  int(11)     NOT NULL COMMENT '创建的用户id',
+    `delete_mark` boolean      DEFAULT FALSE COMMENT '软删除标记',
     PRIMARY KEY (`doctor_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='医生表';
@@ -184,7 +186,8 @@ SELECT `doctor_id`,
        `dept_name`
 FROM base_doctor
          JOIN org_dept ON
-    base_doctor.dept_id = org_dept.dept_id;
+    base_doctor.dept_id = org_dept.dept_id
+WHERE base_doctor.delete_mark = FALSE;
 
 -- ----------------------------
 -- Table structure for base_patient
@@ -199,8 +202,9 @@ CREATE TABLE `base_patient`
     `patient_gender`     char(2)     NOT NULL COMMENT '问诊人性别，1男，2女',
     `patient_birth_date` datetime    NOT NULL COMMENT '问诊人出生日期',
     `patient_birth_age`  tinyint(4)  NOT NULL COMMENT '问诊人年龄',
-    `person_phone_no`    varchar(16) NOT NULL COMMENT '问诊人手机号码',
-    `create_user_id`     int(11)     NOT NULL COMMENT '创建用户id',
+    `patient_phone_no`   varchar(16) NOT NULL COMMENT '问诊人手机号码',
+    `creator_id`         int(11)     NOT NULL COMMENT '创建用户id',
+    `delete_mark`        boolean DEFAULT FALSE COMMENT '软删除标记',
     PRIMARY KEY (`patient_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='问诊人表';

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 机构管理业务
+ * 机构管理与查询业务
  *
  * @author nonlinearthink
  */
@@ -77,7 +77,7 @@ public class OrgController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("权限不足");
         }
         BaseOrg org = baseOrgMapper.selectById(orgId);
-        if (org == null) {
+        if (org == null || org.getDeleteMark()) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("机构不存在");
         } else {
             org.setDeleteMark(true);
@@ -106,7 +106,7 @@ public class OrgController {
         }
         BaseOrg org = baseOrgMapper.selectById(orgId);
         if (org == null || org.getDeleteMark()) {
-            return ResponseEntity.ok("机构不存在");
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("机构不存在");
         } else {
             org.setOrgName(orgName);
             baseOrgMapper.updateById(org);
@@ -126,7 +126,9 @@ public class OrgController {
     public ResponseEntity<List<BaseOrg>> queryAllOrg(@RequestParam(value = "number") Integer number,
                                                      @RequestParam(value = "size") Integer size) {
         log.info("查询所有机构请求");
-        List<BaseOrg> orgList = baseOrgMapper.selectByPage(new Page<>(number, size));
+        QueryWrapper<BaseOrg> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("delete_mark", false);
+        List<BaseOrg> orgList = baseOrgMapper.selectByPageConditional(new Page<>(number, size), queryWrapper);
         return ResponseEntity.ok(orgList);
     }
 

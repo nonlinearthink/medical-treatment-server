@@ -41,7 +41,7 @@ public class LoginController {
 
     final Map<String, Character> userTypeMap = new HashMap<String, Character>(2) {{
         put("user", '1');
-        put("docker", '2');
+        put("doctor", '2');
     }};
 
     @Value("${mini-program.user.appid}")
