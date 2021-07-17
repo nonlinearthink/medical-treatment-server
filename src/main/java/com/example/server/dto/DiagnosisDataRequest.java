@@ -1,25 +1,15 @@
-package com.example.server.entity;
+package com.example.server.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
 /**
- * 基础诊断表
- *
  * @author nonlinearthink
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class BaseDiagnosis {
-
-    /**
-     * 诊断标识
-     */
-    @TableId(type = IdType.AUTO)
-    private Integer diagnosisId;
+public class DiagnosisDataRequest {
 
     /**
      * 诊断类型，1西医，2中医
@@ -45,10 +35,5 @@ public class BaseDiagnosis {
      * 拼音码
      */
     private String pinyinCode;
-
-    /**
-     * 软删除标记
-     */
-    private Boolean deleteMark;
 
 }

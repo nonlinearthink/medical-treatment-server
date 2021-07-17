@@ -227,6 +227,7 @@ CREATE TABLE `base_diagnosis`
     `diseases_id`    int(8)      NOT NULL COMMENT '诊断类型为西医时为疾病标识，为中医时为中医疾病标识',
     `diseases_name`  varchar(36) NOT NULL COMMENT '诊断类型为西医时为疾病名称，为中医时为中医疾病名称',
     `pinyin_code`    varchar(36) NOT NULL COMMENT '拼音码',
+    `delete_mark`    boolean DEFAULT FALSE COMMENT '软删除标记',
     PRIMARY KEY (`diagnosis_id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 52
@@ -237,107 +238,107 @@ CREATE TABLE `base_diagnosis`
 -- ----------------------------
 BEGIN;
 INSERT INTO `base_diagnosis`
-VALUES (1, '1', 'J11.101', 10001, '流行性感冒', 'LXXGM');
+VALUES (1, '1', 'J11.101', 10001, '流行性感冒', 'LXXGM', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (2, '1', 'J10.151', 10002, '流行性感冒性咽炎', 'LXXGMXYY');
+VALUES (2, '1', 'J10.151', 10002, '流行性感冒性咽炎', 'LXXGMXYY', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (3, '1', 'J98.802', 10003, '呼吸道感染', 'HXDGR');
+VALUES (3, '1', 'J98.802', 10003, '呼吸道感染', 'HXDGR', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (4, '1', 'J06.903', 10004, '上呼吸道感染', 'SHXDGR');
+VALUES (4, '1', 'J06.903', 10004, '上呼吸道感染', 'SHXDGR', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (5, '1', 'E14.900', 10005, '糖尿病', 'TNB');
+VALUES (5, '1', 'E14.900', 10005, '糖尿病', 'TNB', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (6, '1', 'E13.904', 10006, '医源性糖尿病', 'YYXTNB');
+VALUES (6, '1', 'E13.904', 10006, '医源性糖尿病', 'YYXTNB', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (7, '1', 'I10.X02', 10007, '高血压', 'GXY');
+VALUES (7, '1', 'I10.X02', 10007, '高血压', 'GXY', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (8, '1', 'H35.001', 10008, '高血压性视网膜病', 'GXYXSWMB');
+VALUES (8, '1', 'H35.001', 10008, '高血压性视网膜病', 'GXYXSWMB', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (9, '1', 'A08.401', 10009, '病毒性肠炎', 'BDXCY');
+VALUES (9, '1', 'A08.401', 10009, '病毒性肠炎', 'BDXCY', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (10, '1', 'A01.001', 10010, '伤寒', 'SH');
+VALUES (10, '1', 'A01.001', 10010, '伤寒', 'SH', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (11, '1', 'A01.052', 10011, '伤寒腹膜炎', 'SHFMY');
+VALUES (11, '1', 'A01.052', 10011, '伤寒腹膜炎', 'SHFMY', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (12, '1', 'K27.503', 10012, '消化道穿孔', 'SHDCK');
+VALUES (12, '1', 'K27.503', 10012, '消化道穿孔', 'SHDCK', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (13, '1', 'K27.451', 10013, '消化性溃疡伴出血', 'XHDKYBCX');
+VALUES (13, '1', 'K27.451', 10013, '消化性溃疡伴出血', 'XHDKYBCX', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (14, '1', 'K30', 10014, '消化不良', 'XHBL');
+VALUES (14, '1', 'K30', 10014, '消化不良', 'XHBL', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (15, '1', 'A16.305', 10015, '支气管淋巴结结核', 'ZQGLBJJH');
+VALUES (15, '1', 'A16.305', 10015, '支气管淋巴结结核', 'ZQGLBJJH', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (16, '1', 'B37.805', 10016, '支气管念珠菌病', 'ZQGNZJB');
+VALUES (16, '1', 'B37.805', 10016, '支气管念珠菌病', 'ZQGNZJB', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (17, '1', 'C34.905', 10017, '支气管恶性肿瘤', 'ZQGEXZL');
+VALUES (17, '1', 'C34.905', 10017, '支气管恶性肿瘤', 'ZQGEXZL', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (18, '1', 'R22.951', 10018, '表浅(局限)肿块', 'QBJXZK');
+VALUES (18, '1', 'R22.951', 10018, '表浅(局限)肿块', 'QBJXZK', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (19, '1', 'R22.451', 10019, '腿部炎性肿块', 'TBYXZK');
+VALUES (19, '1', 'R22.451', 10019, '腿部炎性肿块', 'TBYXZK', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (20, '1', 'A18.405', 10020, '结核性皮肤脓肿', 'JHXPFNZ');
+VALUES (20, '1', 'A18.405', 10020, '结核性皮肤脓肿', 'JHXPFNZ', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (21, '1', 'A18.407', 10021, '皮肤和皮下组织结核', 'PFHPXZZJH');
+VALUES (21, '1', 'A18.407', 10021, '皮肤和皮下组织结核', 'PFHPXZZJH', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (22, '1', 'A18.408', 10022, '皮肤结核', 'PFJH');
+VALUES (22, '1', 'A18.408', 10022, '皮肤结核', 'PFJH', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (23, '1', 'A36.301', 10023, '皮肤白喉', 'PFBH');
+VALUES (23, '1', 'A36.301', 10023, '皮肤白喉', 'PFBH', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (24, '1', 'E51.101', 10024, '脚气病', 'JQB');
+VALUES (24, '1', 'E51.101', 10024, '脚气病', 'JQB', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (25, '1', 'E51.152', 10025, '干性脚气病', 'GXJQB');
+VALUES (25, '1', 'E51.152', 10025, '干性脚气病', 'GXJQB', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (26, '1', 'S90.351', 10026, '脚挫伤', 'JCS');
+VALUES (26, '1', 'S90.351', 10026, '脚挫伤', 'JCS', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (27, '1', 'M54.475', 10027, '腰腿痛', 'YTT');
+VALUES (27, '1', 'M54.475', 10027, '腰腿痛', 'YTT', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (28, '1', 'L03.104', 10028, '腿蜂窝织炎', 'TFWZY');
+VALUES (28, '1', 'L03.104', 10028, '腿蜂窝织炎', 'TFWZY', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (29, '1', 'Q68.551', 10029, '腿弓形', 'TGX');
+VALUES (29, '1', 'Q68.551', 10029, '腿弓形', 'TGX', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (30, '1', 'R22.451', 10030, '腿部炎性肿块', 'TBYXZK');
+VALUES (30, '1', 'R22.451', 10030, '腿部炎性肿块', 'TBYXZK', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (31, '1', 'R60.051', 10031, '遗传性腿部水肿', 'YCXTBSZ');
+VALUES (31, '1', 'R60.051', 10031, '遗传性腿部水肿', 'YCXTBSZ', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (32, '1', 'S70.901', 10032, '大腿血肿', 'DTXZ');
+VALUES (32, '1', 'S70.901', 10032, '大腿血肿', 'DTXZ', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (33, '1', 'S71.101', 10033, '大腿撕脱伤', 'DTSTS');
+VALUES (33, '1', 'S71.101', 10033, '大腿撕脱伤', 'DTSTS', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (34, '1', 'S71.102', 10034, '大腿开放性伤口', 'DTKFXSK');
+VALUES (34, '1', 'S71.102', 10034, '大腿开放性伤口', 'DTKFXSK', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (35, '1', 'C76.502', 10035, '小腿恶性肿瘤', 'XTEXZL');
+VALUES (35, '1', 'C76.502', 10035, '小腿恶性肿瘤', 'XTEXZL', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (36, '1', 'B08.401', 10036, '手足口病', 'SZKB');
+VALUES (36, '1', 'B08.401', 10036, '手足口病', 'SZKB', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (37, '1', 'B35.201', 10037, '手癣', 'SX');
+VALUES (37, '1', 'B35.201', 10037, '手癣', 'SX', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (38, '1', 'B35.251', 10038, '手皮真菌病', 'SPZJB');
+VALUES (38, '1', 'B35.251', 10038, '手皮真菌病', 'SPZJB', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (39, '1', 'B35.851', 10039, '手足癣', 'SZX');
+VALUES (39, '1', 'B35.851', 10039, '手足癣', 'SZX', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (40, '1', 'E89.002', 10040, '手术后甲状腺机能减退', 'SSHJZXJNJT');
+VALUES (40, '1', 'E89.002', 10040, '手术后甲状腺机能减退', 'SSHJZXJNJT', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (41, '1', 'E89.101', 10041, '手术后低胰岛素血症', 'SSHDYDSXZ');
+VALUES (41, '1', 'E89.101', 10041, '手术后低胰岛素血症', 'SSHDYDSXZ', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (42, '1', 'E89.301', 10042, '手术后垂体机能减退', 'SSHCTJNJT');
+VALUES (42, '1', 'E89.301', 10042, '手术后垂体机能减退', 'SSHCTJNJT', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (43, '1', 'B15.902', 10043, '传染性肝炎', 'CRXGY');
+VALUES (43, '1', 'B15.902', 10043, '传染性肝炎', 'CRXGY', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (44, '1', 'B15.901', 10044, '甲型病毒性肝炎', 'JXBDXGY');
+VALUES (44, '1', 'B15.901', 10044, '甲型病毒性肝炎', 'JXBDXGY', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (45, '1', 'B15.907', 10045, '甲型病毒性重型肝炎', 'JXBDXZXGY');
+VALUES (45, '1', 'B15.907', 10045, '甲型病毒性重型肝炎', 'JXBDXZXGY', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (46, '1', 'A02.006', 10046, '沙门氏菌胃肠炎', 'SMSJWCY');
+VALUES (46, '1', 'A02.006', 10046, '沙门氏菌胃肠炎', 'SMSJWCY', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (47, '1', 'A02.004', 10047, '沙门氏菌性肠炎', 'SMSJXCY');
+VALUES (47, '1', 'A02.004', 10047, '沙门氏菌性肠炎', 'SMSJXCY', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (48, '1', 'A01.057', 10048, '伤寒样小肠炎', 'SHXXCY');
+VALUES (48, '1', 'A01.057', 10048, '伤寒样小肠炎', 'SHXXCY', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (49, '1', 'A01.056', 10049, '肠伤寒', 'CSH');
+VALUES (49, '1', 'A01.056', 10049, '肠伤寒', 'CSH', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (50, '1', 'A05.952', 10050, '胃肠型食物中毒', 'WCXSWZD');
+VALUES (50, '1', 'A05.952', 10050, '胃肠型食物中毒', 'WCXSWZD', FALSE);
 INSERT INTO `base_diagnosis`
-VALUES (51, '1', 'A01.055', 10051, '伤寒性肠穿孔', 'SHXCCK');
+VALUES (51, '1', 'A01.055', 10051, '伤寒性肠穿孔', 'SHXCCK', FALSE);
 COMMIT;
 
 -- ----------------------------
@@ -349,6 +350,7 @@ CREATE TABLE `base_dic_drug_frequency`
     `drug_frequency_id`        int(11)     NOT NULL AUTO_INCREMENT COMMENT '药品频次id',
     `drug_frequency_name`      varchar(32) NOT NULL COMMENT '药品频次名称',
     `drug_frequency_name_abbr` varchar(32) NOT NULL COMMENT '药品频次名称缩写',
+    `delete_mark`        boolean DEFAULT FALSE COMMENT '软删除标记',
     PRIMARY KEY (`drug_frequency_id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 7
@@ -359,17 +361,17 @@ CREATE TABLE `base_dic_drug_frequency`
 -- ----------------------------
 BEGIN;
 INSERT INTO `base_dic_drug_frequency`
-VALUES (1, '每日一次', 'qd');
+VALUES (1, '每日一次', 'qd', FALSE);
 INSERT INTO `base_dic_drug_frequency`
-VALUES (2, '每日两次', 'bid');
+VALUES (2, '每日两次', 'bid', FALSE);
 INSERT INTO `base_dic_drug_frequency`
-VALUES (3, '每日三次', 'tid');
+VALUES (3, '每日三次', 'tid', FALSE);
 INSERT INTO `base_dic_drug_frequency`
-VALUES (4, '每日四次', 'qid');
+VALUES (4, '每日四次', 'qid', FALSE);
 INSERT INTO `base_dic_drug_frequency`
-VALUES (5, '隔日一次', 'qod');
+VALUES (5, '隔日一次', 'qod', FALSE);
 INSERT INTO `base_dic_drug_frequency`
-VALUES (6, '每周一次', 'qw');
+VALUES (6, '每周一次', 'qw', FALSE);
 COMMIT;
 
 -- ----------------------------
@@ -380,6 +382,7 @@ CREATE TABLE `base_dic_drug_usage`
 (
     `drug_usage_id`   int(11)     NOT NULL AUTO_INCREMENT COMMENT '药品用法id',
     `drug_usage_name` varchar(32) NOT NULL COMMENT '药品用法名称',
+    `delete_mark`        boolean DEFAULT FALSE COMMENT '软删除标记',
     PRIMARY KEY (`drug_usage_id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 5
@@ -390,13 +393,13 @@ CREATE TABLE `base_dic_drug_usage`
 -- ----------------------------
 BEGIN;
 INSERT INTO `base_dic_drug_usage`
-VALUES (1, '口服');
+VALUES (1, '口服', FALSE);
 INSERT INTO `base_dic_drug_usage`
-VALUES (2, '涂抹');
+VALUES (2, '涂抹', FALSE);
 INSERT INTO `base_dic_drug_usage`
-VALUES (3, '静脉注射');
+VALUES (3, '静脉注射', FALSE);
 INSERT INTO `base_dic_drug_usage`
-VALUES (4, '皮下注射');
+VALUES (4, '皮下注射', FALSE);
 COMMIT;
 
 -- ----------------------------
@@ -416,6 +419,7 @@ CREATE TABLE `base_drug`
     `dose_unit`       varchar(4)     NOT NULL COMMENT '剂量单位',
     `factory_name`    varchar(255)            DEFAULT NULL COMMENT '产地',
     `approval_number` varchar(64)             DEFAULT NULL COMMENT '批准文号',
+    `delete_mark`        boolean DEFAULT FALSE COMMENT '软删除标记',
     PRIMARY KEY (`drug_id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 15
@@ -426,35 +430,35 @@ CREATE TABLE `base_drug`
 -- ----------------------------
 BEGIN;
 INSERT INTO `base_drug`
-VALUES (1, '肠炎宁片', '[康恩贝]肠炎宁片', 'cynp', '0.42g*48片', '盒', 30.00, 0.42, 'g', '江西康恩贝中药有限公司', '国药准字Z36020518');
+VALUES (1, '肠炎宁片', '[康恩贝]肠炎宁片', 'cynp', '0.42g*48片', '盒', 30.00, 0.42, 'g', '江西康恩贝中药有限公司', '国药准字Z36020518', FALSE);
 INSERT INTO `base_drug`
-VALUES (2, '连花清瘟胶囊', '[以岭]连花清瘟胶囊', 'lhqwjn', '0.35g*36粒', '盒', 29.10, 0.35, 'g', '石家庄以岭药业股份有限公司', '国药准字Z20040063');
+VALUES (2, '连花清瘟胶囊', '[以岭]连花清瘟胶囊', 'lhqwjn', '0.35g*36粒', '盒', 29.10, 0.35, 'g', '石家庄以岭药业股份有限公司', '国药准字Z20040063', FALSE);
 INSERT INTO `base_drug`
-VALUES (3, '小柴胡颗粒', '[999]小柴胡颗粒', 'xchkl', '10g*9袋', '盒', 18.20, 10.00, 'g', '华润三九医药股份有限公司', '国药准字Z44020709');
+VALUES (3, '小柴胡颗粒', '[999]小柴胡颗粒', 'xchkl', '10g*9袋', '盒', 18.20, 10.00, 'g', '华润三九医药股份有限公司', '国药准字Z44020709', FALSE);
 INSERT INTO `base_drug`
-VALUES (4, '布洛芬缓释胶囊', '[芬必得]布洛芬缓释胶囊', 'blfysjn', '0.3g*20粒', '盒', 14.20, 0.30, 'g', '中美天津史克制药有限公司', '国药准字H20013062');
+VALUES (4, '布洛芬缓释胶囊', '[芬必得]布洛芬缓释胶囊', 'blfysjn', '0.3g*20粒', '盒', 14.20, 0.30, 'g', '中美天津史克制药有限公司', '国药准字H20013062', FALSE);
 INSERT INTO `base_drug`
-VALUES (5, '清凉油(白色)', '[龙虎]清凉油(白色)', 'qly', '18.4g', '瓶', 23.00, 0.10, 'g', '上海中华药业有限公司', '国药准字Z20026718');
+VALUES (5, '清凉油(白色)', '[龙虎]清凉油(白色)', 'qly', '18.4g', '瓶', 23.00, 0.10, 'g', '上海中华药业有限公司', '国药准字Z20026718', FALSE);
 INSERT INTO `base_drug`
-VALUES (6, '曲安奈德益康唑乳膏', '[派瑞松]曲安奈德益康唑乳膏', 'qatdykzlg', '15g', '支', 21.00, 0.20, 'g', '西安杨森制药有限公司', '国药准字H20000454');
+VALUES (6, '曲安奈德益康唑乳膏', '[派瑞松]曲安奈德益康唑乳膏', 'qatdykzlg', '15g', '支', 21.00, 0.20, 'g', '西安杨森制药有限公司', '国药准字H20000454', FALSE);
 INSERT INTO `base_drug`
-VALUES (7, '卡托普利片', '[开博通]卡托普利片', 'ktplp', '12.5mg*20片', '盒', 22.00, 12.50, 'mg', '中美上海施贵宝制药有限公司', '国药准字H31022986');
+VALUES (7, '卡托普利片', '[开博通]卡托普利片', 'ktplp', '12.5mg*20片', '盒', 22.00, 12.50, 'mg', '中美上海施贵宝制药有限公司', '国药准字H31022986', FALSE);
 INSERT INTO `base_drug`
 VALUES (8, '磷酸西格列汀片', '[捷诺维]磷酸西格列汀片', 'lsxgltp', '100mg*14片', '盒', 115.00, 100.00, 'mg', '杭州默沙东制药有限公司',
-        '国药准字J20140095');
+        '国药准字J20140095', FALSE);
 INSERT INTO `base_drug`
-VALUES (9, '盐酸二甲双胍片', '[格华止]盐酸二甲双胍片', 'ysejsgp', '0.85g*20片', '盒', 32.00, 0.85, 'g', '中美上海施贵宝制药有限公司', '国药准字H20023371');
+VALUES (9, '盐酸二甲双胍片', '[格华止]盐酸二甲双胍片', 'ysejsgp', '0.85g*20片', '盒', 32.00, 0.85, 'g', '中美上海施贵宝制药有限公司', '国药准字H20023371', FALSE);
 INSERT INTO `base_drug`
-VALUES (10, '小儿氨酚烷胺颗粒', '[优卡丹]小儿氨酚烷胺颗粒', 'xeafwakl', '6g*16袋', '盒', 18.00, 8.00, 'g', '江西铜鼓仁和制药有限公司', '国药准字H20068170');
+VALUES (10, '小儿氨酚烷胺颗粒', '[优卡丹]小儿氨酚烷胺颗粒', 'xeafwakl', '6g*16袋', '盒', 18.00, 8.00, 'g', '江西铜鼓仁和制药有限公司', '国药准字H20068170', FALSE);
 INSERT INTO `base_drug`
 VALUES (11, '小儿感冒口服液', '[同仁堂]小儿感冒口服液', 'xegmkfy', '10ml*10支', '盒', 19.80, 5.00, 'ml', '北京同仁堂科技发展股份有限公司制药厂',
-        '国药准字Z10940020');
+        '国药准字Z10940020', FALSE);
 INSERT INTO `base_drug`
-VALUES (12, '炉甘石洗剂', '[信龙]炉甘石洗剂', 'lgsxj', '100ml', '瓶', 11.00, 10.00, 'ml', '上海运佳黄浦制药有限公司', '国药准字H31022790');
+VALUES (12, '炉甘石洗剂', '[信龙]炉甘石洗剂', 'lgsxj', '100ml', '瓶', 11.00, 10.00, 'ml', '上海运佳黄浦制药有限公司', '国药准字H31022790', FALSE);
 INSERT INTO `base_drug`
-VALUES (13, '红霉素眼膏', '[云植]红霉素眼膏', 'hmsyg', '2g', '支', 4.50, 0.01, 'g', '云南植物药业有限公司', '国药准字H53020376');
+VALUES (13, '红霉素眼膏', '[云植]红霉素眼膏', 'hmsyg', '2g', '支', 4.50, 0.01, 'g', '云南植物药业有限公司', '国药准字H53020376', FALSE);
 INSERT INTO `base_drug`
-VALUES (14, '呋塞米片', '[三才]呋塞米片', 'fsmp', '20mg*100片', '瓶', 8.70, 20.00, 'mg', '三才石岐制药股份有限公司', '国药准字H44023242');
+VALUES (14, '呋塞米片', '[三才]呋塞米片', 'fsmp', '20mg*100片', '瓶', 8.70, 20.00, 'mg', '三才石岐制药股份有限公司', '国药准字H44023242', FALSE);
 COMMIT;
 
 -- ----------------------------

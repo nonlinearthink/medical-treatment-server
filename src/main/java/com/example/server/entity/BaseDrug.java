@@ -73,4 +73,9 @@ public class BaseDrug {
      */
     private String approvalNumber;
 
+    /**
+     * 软删除标记
+     */
+    private Boolean deleteMark;
+
 }
