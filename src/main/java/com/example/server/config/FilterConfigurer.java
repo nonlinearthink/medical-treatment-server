@@ -15,10 +15,10 @@ public class FilterConfigurer {
 
     @Bean
     public FilterRegistrationBean<Filter> filterRegistrationBean() {
-        FilterRegistrationBean<Filter> bean = new FilterRegistrationBean<Filter>();
+        FilterRegistrationBean<Filter> bean = new FilterRegistrationBean<>();
         bean.setFilter(getAuthFilter());
         bean.addUrlPatterns("/api/admin/*", "/api/org/*", "/api/dept/*", "/api/doctor/*", "/api/patient/*",
-                "/api/diagnosis");
+                "/api/diagnosis/*", "/api/drug/*", "/api/consult-ask/*");
         bean.setName("AuthFilter");
         return bean;
     }

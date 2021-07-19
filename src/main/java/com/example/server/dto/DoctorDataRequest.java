@@ -31,4 +31,9 @@ public class DoctorDataRequest {
      */
     private Character levelCode;
 
+    /**
+     * 手机号码
+     */
+    private String phoneNo;
+
 }

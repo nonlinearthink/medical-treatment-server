@@ -2,175 +2,244 @@ let api = [];
 api.push({
     alias: 'api',
     order: '1',
+    desc: '药品管理和查询业务',
+    link: '药品管理和查询业务',
+    list: []
+})
+api[0].list.push({
+    order: '1',
+    desc: '管理员创建药品',
+});
+api[0].list.push({
+    order: '2',
+    desc: '管理员删除药品',
+});
+api[0].list.push({
+    order: '3',
+    desc: '管理员更新药品',
+});
+api[0].list.push({
+    order: '4',
+    desc: '查询所有药品列表',
+});
+api[0].list.push({
+    order: '5',
+    desc: '通过关键字搜索所有药品列表',
+});
+api.push({
+    alias: 'AdminController',
+    order: '2',
     desc: '管理员管理与查询业务',
     link: '管理员管理与查询业务',
     list: []
 })
-api[0].list.push({
+api[1].list.push({
     order: '1',
     desc: '超级管理员添加管理员',
 });
-api[0].list.push({
+api[1].list.push({
     order: '2',
     desc: '超级管理员删除管理员',
 });
-api[0].list.push({
+api[1].list.push({
     order: '3',
     desc: '超级管理员更新管理员权限',
 });
-api[0].list.push({
+api[1].list.push({
     order: '4',
     desc: '超级管理员重置管理员密码',
 });
-api[0].list.push({
+api[1].list.push({
     order: '5',
     desc: '管理员自己更新密码',
 });
-api[0].list.push({
+api[1].list.push({
     order: '6',
     desc: '管理员查询所有管理员（分页）',
 });
 api.push({
-    alias: 'OrgController',
+    alias: 'ConsultAskController',
+    order: '3',
+    desc: '问诊记录管理和查询业务',
+    link: '问诊记录管理和查询业务',
+    list: []
+})
+api[2].list.push({
+    order: '1',
+    desc: '用户创建问诊记录',
+});
+api[2].list.push({
     order: '2',
+    desc: '用户删除问诊记录',
+});
+api[2].list.push({
+    order: '3',
+    desc: '用户更新问诊记录',
+});
+api.push({
+    alias: 'OrgController',
+    order: '4',
     desc: '机构管理与查询业务',
     link: '机构管理与查询业务',
     list: []
 })
-api[1].list.push({
+api[3].list.push({
     order: '1',
     desc: '管理员创建机构',
 });
-api[1].list.push({
+api[3].list.push({
     order: '2',
     desc: '管理员删除机构',
 });
-api[1].list.push({
+api[3].list.push({
     order: '3',
     desc: '管理员更新机构名称',
 });
-api[1].list.push({
+api[3].list.push({
     order: '4',
     desc: '查询所有机构（分页、需携带token）',
 });
 api.push({
     alias: 'ImageServerController',
-    order: '3',
+    order: '5',
     desc: '图片服务器业务',
     link: '图片服务器业务',
     list: []
 })
-api[2].list.push({
+api[4].list.push({
     order: '1',
     desc: '上传图片（fromData上传）',
 });
-api[2].list.push({
+api[4].list.push({
     order: '2',
     desc: '上传图片（Base64编码）',
 });
-api[2].list.push({
+api[4].list.push({
     order: '3',
     desc: '根据图片ID获取图片地址',
 });
 api.push({
-    alias: 'DoctorController',
+    alias: 'DiagnosisController',
+    order: '6',
+    desc: '诊断类型管理和查询业务',
+    link: '诊断类型管理和查询业务',
+    list: []
+})
+api[5].list.push({
+    order: '1',
+    desc: '管理员创建诊断类型',
+});
+api[5].list.push({
+    order: '2',
+    desc: '管理员删除诊断类型',
+});
+api[5].list.push({
+    order: '3',
+    desc: '管理员更新诊断类型名称',
+});
+api[5].list.push({
     order: '4',
+    desc: '管理员查询诊断类型列表',
+});
+api.push({
+    alias: 'DoctorController',
+    order: '7',
     desc: '医生管理与查询业务',
     link: '医生管理与查询业务',
     list: []
 })
-api[3].list.push({
+api[6].list.push({
     order: '1',
-    desc: '医生端创建医生（绑定医生）',
+    desc: '管理员创建医生',
 });
-api[3].list.push({
+api[6].list.push({
     order: '2',
-    desc: '医生端删除医生（解除绑定）',
+    desc: '管理员删除医生',
 });
-api[3].list.push({
+api[6].list.push({
     order: '3',
-    desc: '医生端更新医生',
+    desc: '管理员更新医生',
 });
-api[3].list.push({
+api[6].list.push({
     order: '4',
     desc: '查询医生列表（分页、需携带token）',
 });
-api[3].list.push({
+api[6].list.push({
     order: '5',
     desc: '医生端查询绑定的医生',
 });
-api[3].list.push({
+api[6].list.push({
     order: '6',
     desc: '根据ID查询医生数据（需携带token）',
 });
 api.push({
     alias: 'DeptController',
-    order: '5',
+    order: '8',
     desc: '科室管理与查询业务',
     link: '科室管理与查询业务',
     list: []
 })
-api[4].list.push({
+api[7].list.push({
     order: '1',
     desc: '管理员创建科室',
 });
-api[4].list.push({
+api[7].list.push({
     order: '2',
     desc: '管理员删除科室',
 });
-api[4].list.push({
+api[7].list.push({
     order: '3',
     desc: '管理员更新科室信息',
 });
-api[4].list.push({
+api[7].list.push({
     order: '4',
     desc: '查询所有科室（分页、需携带token）',
 });
 api.push({
     alias: 'PatientController',
-    order: '6',
+    order: '9',
     desc: '问诊人管理与查询业务',
     link: '问诊人管理与查询业务',
     list: []
 })
-api[5].list.push({
+api[8].list.push({
     order: '1',
     desc: '用户端创建问诊人（绑定）',
 });
-api[5].list.push({
+api[8].list.push({
     order: '2',
     desc: '用户端删除问诊人（解绑）',
 });
-api[5].list.push({
+api[8].list.push({
     order: '3',
     desc: '用户端更新问诊人信息',
 });
-api[5].list.push({
+api[8].list.push({
     order: '4',
     desc: '根据问诊人id查询问诊人信息',
 });
-api[5].list.push({
+api[8].list.push({
     order: '5',
     desc: '用户端获取自己创建的问诊人列表',
 });
 api.push({
     alias: 'LoginController',
-    order: '7',
+    order: '10',
     desc: '登录业务',
     link: '登录业务',
     list: []
 })
-api[6].list.push({
+api[9].list.push({
     order: '1',
     desc: '微信小程序登录',
 });
-api[6].list.push({
+api[9].list.push({
     order: '2',
     desc: '管理员登录',
 });
 api.push({
     alias: 'dict',
-    order: '8',
+    order: '11',
     desc: '数据字典',
     link: 'dict_list',
     list: []

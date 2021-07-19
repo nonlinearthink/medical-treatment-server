@@ -32,11 +32,6 @@ public class BaseDiagnosis {
     private String diseasesCode;
 
     /**
-     * 诊断类型为西医时为疾病标识，为中医时为中医疾病标识
-     */
-    private Integer diseasesId;
-
-    /**
      * 诊断类型为西医时为疾病名称，为中医时为中医疾病名称
      */
     private String diseasesName;

@@ -24,7 +24,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
-@RequestMapping("/api/dept")
+@RequestMapping("/api/diagnosis")
 public class DiagnosisController {
 
     private final BaseDiagnosisMapper baseDiagnosisMapper;
@@ -58,7 +58,6 @@ public class DiagnosisController {
             diagnosis = BaseDiagnosis.builder()
                     .diagnosisType(diagnosisData.getDiagnosisType())
                     .diseasesCode(diagnosisData.getDiseasesCode())
-                    .diagnosisId(diagnosisData.getDiseasesId())
                     .diseasesName(diagnosisData.getDiseasesName())
                     .pinyinCode(diagnosisData.getPinyinCode())
                     .build();

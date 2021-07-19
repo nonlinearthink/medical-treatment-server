@@ -66,7 +66,8 @@ public class DeptController {
     /**
      * 管理员删除科室
      *
-     * @param deptId 科室id
+     * @param operatorId 操作者ID，从token中获取，请携带token，需是管理员
+     * @param deptId     科室id
      * @return 成功或者失败信息
      */
     @SneakyThrows
@@ -132,13 +133,10 @@ public class DeptController {
         List<BaseDept> deptList;
         QueryWrapper<BaseDept> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("delete_mark", false);
-        if (orgId == null) {
-            deptList = baseDeptMapper.selectByPageConditional(new Page<>(number, size), queryWrapper);
-        } else {
-            log.info("查询单个机构下的所有请求: " + orgId);
+        if (orgId != null) {
             queryWrapper.eq("org_id", orgId);
-            deptList = baseDeptMapper.selectByPageConditional(new Page<>(number, size), queryWrapper);
         }
+        deptList = baseDeptMapper.selectByPageConditional(new Page<>(number, size), queryWrapper);
         return ResponseEntity.ok(deptList);
     }
 

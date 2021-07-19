@@ -27,11 +27,6 @@ public class BaseDoctor {
     private String doctorName;
 
     /**
-     * 科室id
-     */
-    private Integer deptId;
-
-    /**
      * 医生头像链接
      */
     private String avatarUrl;
@@ -47,9 +42,14 @@ public class BaseDoctor {
     private String levelName;
 
     /**
-     * 创建的用户id
+     * 手机号码
      */
-    private Integer creatorId;
+    private String phoneNo;
+
+    /**
+     * 科室id
+     */
+    private Integer deptId;
 
     /**
      * 软删除标记

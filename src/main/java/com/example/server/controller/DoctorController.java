@@ -5,8 +5,10 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.server.dto.DoctorDataRequest;
+import com.example.server.entity.BaseAccount;
 import com.example.server.entity.BaseDoctor;
 import com.example.server.entity.DeptDoctor;
+import com.example.server.mapper.BaseAccountMapper;
 import com.example.server.mapper.BaseDoctorMapper;
 import com.example.server.mapper.DeptDoctorMapper;
 import lombok.SneakyThrows;
@@ -41,15 +43,18 @@ public class DoctorController {
 
     private final BaseDoctorMapper baseDoctorMapper;
     private final DeptDoctorMapper deptDoctorMapper;
+    private final BaseAccountMapper baseAccountMapper;
 
     @Autowired
-    public DoctorController(BaseDoctorMapper baseDoctorMapper, DeptDoctorMapper deptDoctorMapper) {
+    public DoctorController(BaseDoctorMapper baseDoctorMapper, DeptDoctorMapper deptDoctorMapper,
+                            BaseAccountMapper baseAccountMapper) {
         this.baseDoctorMapper = baseDoctorMapper;
         this.deptDoctorMapper = deptDoctorMapper;
+        this.baseAccountMapper = baseAccountMapper;
     }
 
     /**
-     * 医生端创建医生（绑定医生）
+     * 管理员创建医生
      *
      * @param creatorId  创建者ID，从token中获取，请携带token
      * @param doctorData 创建doctor需要的数据
@@ -58,11 +63,14 @@ public class DoctorController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("")
-    public ResponseEntity<BaseDoctor> createDoctor(@RequestAttribute(name = "user_id") Integer creatorId,
+    public ResponseEntity<BaseDoctor> createDoctor(@RequestAttribute(name = "admin_id") Integer creatorId,
                                                    @RequestBody DoctorDataRequest doctorData) {
         log.info("添加医生请求");
+        if (creatorId == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
         QueryWrapper<BaseDoctor> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("creator_id", creatorId);
+        queryWrapper.eq("phone_no", doctorData.getPhoneNo());
         BaseDoctor doctor = baseDoctorMapper.selectOne(queryWrapper);
         if (doctor == null) {
             doctor = BaseDoctor.builder()
@@ -70,7 +78,7 @@ public class DoctorController {
                     .avatarUrl(doctorData.getAvatarUrl())
                     .levelCode(doctorData.getLevelCode())
                     .levelName(levelMap.get(doctorData.getLevelCode()))
-                    .creatorId(creatorId)
+                    .phoneNo(doctorData.getPhoneNo())
                     .build();
             baseDoctorMapper.insert(doctor);
         } else if (doctor.getDeleteMark()) {
@@ -79,7 +87,7 @@ public class DoctorController {
             doctor.setAvatarUrl(doctorData.getAvatarUrl());
             doctor.setLevelCode(doctorData.getLevelCode());
             doctor.setLevelName(doctorData.getDoctorName());
-            doctor.setCreatorId(creatorId);
+            doctor.setPhoneNo(doctorData.getPhoneNo());
             baseDoctorMapper.updateById(doctor);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
@@ -88,7 +96,7 @@ public class DoctorController {
     }
 
     /**
-     * 医生端删除医生（解除绑定）
+     * 管理员删除医生
      *
      * @param operatorId 操作者ID，从token中获取，请携带token
      * @param doctorId   医生id
@@ -97,23 +105,24 @@ public class DoctorController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @DeleteMapping("/{doctorId}")
-    public ResponseEntity<String> deleteDoctor(@RequestAttribute(name = "user_id") Integer operatorId,
+    public ResponseEntity<String> deleteDoctor(@RequestAttribute(name = "admin_id") Integer operatorId,
                                                @PathVariable(value = "doctorId") Integer doctorId) {
         log.info("删除医生请求");
+        if (operatorId == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("权限不足");
+        }
         BaseDoctor doctor = baseDoctorMapper.selectById(doctorId);
         if (doctor == null || doctor.getDeleteMark()) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("医生不存在");
-        } else if (doctor.getCreatorId().equals(operatorId)) {
+        } else {
             doctor.setDeleteMark(true);
             baseDoctorMapper.updateById(doctor);
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("权限不足");
         }
         return ResponseEntity.ok("删除医生成功");
     }
 
     /**
-     * 医生端更新医生
+     * 管理员更新医生
      *
      * @param operatorId 操作者ID，从token中获取，请携带token
      * @param doctorId   医生id
@@ -123,7 +132,7 @@ public class DoctorController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @PutMapping("/{doctorId}")
-    public ResponseEntity<String> updateDoctor(@RequestAttribute(name = "user_id") Integer operatorId,
+    public ResponseEntity<String> updateDoctor(@RequestAttribute(name = "admin_id") Integer operatorId,
                                                @PathVariable(value = "doctorId") Integer doctorId,
                                                @RequestBody DoctorDataRequest doctorData) {
         log.info("更新医生请求");
@@ -133,8 +142,6 @@ public class DoctorController {
         BaseDoctor doctor = baseDoctorMapper.selectById(doctorId);
         if (doctor == null || doctor.getDeleteMark()) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("医生不存在");
-        } else if (!doctor.getCreatorId().equals(operatorId)) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("创建者不匹配");
         } else {
             BeanUtil.copyProperties(doctorData, doctor, new CopyOptions().setIgnoreNullValue(true));
             baseDoctorMapper.updateById(doctor);
@@ -168,9 +175,9 @@ public class DoctorController {
     @GetMapping("/data")
     public ResponseEntity<BaseDoctor> queryBaseDoctorById(@RequestAttribute(name = "user_id") Integer operatorId) {
         log.info("根据doctorId查询DeptDoctor");
+        BaseAccount account = baseAccountMapper.selectById(operatorId);
         QueryWrapper<BaseDoctor> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("creator_id", operatorId);
-        queryWrapper.eq("delete_mark", false);
+        queryWrapper.eq("phone_no", account.getPhoneNo());
         BaseDoctor doctor = baseDoctorMapper.selectOne(queryWrapper);
         return ResponseEntity.ok(doctor);
     }
