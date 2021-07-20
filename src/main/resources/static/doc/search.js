@@ -76,6 +76,18 @@ api[2].list.push({
     order: '3',
     desc: '用户更新问诊记录',
 });
+api[2].list.push({
+    order: '4',
+    desc: '用户查询自己的所有问诊记录数据（分页）',
+});
+api[2].list.push({
+    order: '5',
+    desc: '医生查询所有问诊记录数据（分页）',
+});
+api[2].list.push({
+    order: '6',
+    desc: '查询完整问诊信息',
+});
 api.push({
     alias: 'OrgController',
     order: '4',
@@ -100,146 +112,196 @@ api[3].list.push({
     desc: '查询所有机构（分页、需携带token）',
 });
 api.push({
-    alias: 'ImageServerController',
+    alias: 'PrescriptionController',
     order: '5',
-    desc: '图片服务器业务',
-    link: '图片服务器业务',
+    desc: '处方管理与查询业务',
+    link: '处方管理与查询业务',
     list: []
 })
 api[4].list.push({
     order: '1',
-    desc: '上传图片（fromData上传）',
+    desc: '医生创建处方',
 });
 api[4].list.push({
     order: '2',
-    desc: '上传图片（Base64编码）',
+    desc: '医生删除处方',
 });
 api[4].list.push({
+    order: '3',
+    desc: '医生更新处方',
+});
+api[4].list.push({
+    order: '4',
+    desc: '获取电子处方',
+});
+api.push({
+    alias: 'ImageServerController',
+    order: '6',
+    desc: '图片服务器业务',
+    link: '图片服务器业务',
+    list: []
+})
+api[5].list.push({
+    order: '1',
+    desc: '上传图片（fromData上传）',
+});
+api[5].list.push({
+    order: '2',
+    desc: '上传图片（Base64编码）',
+});
+api[5].list.push({
     order: '3',
     desc: '根据图片ID获取图片地址',
 });
 api.push({
     alias: 'DiagnosisController',
-    order: '6',
+    order: '7',
     desc: '诊断类型管理和查询业务',
     link: '诊断类型管理和查询业务',
     list: []
 })
-api[5].list.push({
+api[6].list.push({
     order: '1',
     desc: '管理员创建诊断类型',
 });
-api[5].list.push({
+api[6].list.push({
     order: '2',
     desc: '管理员删除诊断类型',
 });
-api[5].list.push({
+api[6].list.push({
     order: '3',
     desc: '管理员更新诊断类型名称',
 });
-api[5].list.push({
+api[6].list.push({
     order: '4',
     desc: '管理员查询诊断类型列表',
 });
 api.push({
     alias: 'DoctorController',
-    order: '7',
+    order: '8',
     desc: '医生管理与查询业务',
     link: '医生管理与查询业务',
     list: []
 })
-api[6].list.push({
+api[7].list.push({
     order: '1',
     desc: '管理员创建医生',
 });
-api[6].list.push({
+api[7].list.push({
     order: '2',
     desc: '管理员删除医生',
 });
-api[6].list.push({
+api[7].list.push({
     order: '3',
     desc: '管理员更新医生',
 });
-api[6].list.push({
+api[7].list.push({
     order: '4',
     desc: '查询医生列表（分页、需携带token）',
 });
-api[6].list.push({
+api[7].list.push({
     order: '5',
+    desc: '根据科室id查询医生列表（分页、需携带token）',
+});
+api[7].list.push({
+    order: '6',
+    desc: '通过关键字搜索所有医生',
+});
+api[7].list.push({
+    order: '7',
     desc: '医生端查询绑定的医生',
 });
-api[6].list.push({
-    order: '6',
+api[7].list.push({
+    order: '8',
     desc: '根据ID查询医生数据（需携带token）',
 });
 api.push({
     alias: 'DeptController',
-    order: '8',
+    order: '9',
     desc: '科室管理与查询业务',
     link: '科室管理与查询业务',
     list: []
 })
-api[7].list.push({
+api[8].list.push({
     order: '1',
     desc: '管理员创建科室',
 });
-api[7].list.push({
+api[8].list.push({
     order: '2',
     desc: '管理员删除科室',
 });
-api[7].list.push({
+api[8].list.push({
     order: '3',
     desc: '管理员更新科室信息',
 });
-api[7].list.push({
+api[8].list.push({
     order: '4',
     desc: '查询所有科室（分页、需携带token）',
 });
 api.push({
     alias: 'PatientController',
-    order: '9',
+    order: '10',
     desc: '问诊人管理与查询业务',
     link: '问诊人管理与查询业务',
     list: []
 })
-api[8].list.push({
+api[9].list.push({
     order: '1',
     desc: '用户端创建问诊人（绑定）',
 });
-api[8].list.push({
+api[9].list.push({
     order: '2',
     desc: '用户端删除问诊人（解绑）',
 });
-api[8].list.push({
+api[9].list.push({
     order: '3',
     desc: '用户端更新问诊人信息',
 });
-api[8].list.push({
+api[9].list.push({
     order: '4',
     desc: '根据问诊人id查询问诊人信息',
 });
-api[8].list.push({
+api[9].list.push({
     order: '5',
     desc: '用户端获取自己创建的问诊人列表',
 });
 api.push({
     alias: 'LoginController',
-    order: '10',
+    order: '11',
     desc: '登录业务',
     link: '登录业务',
     list: []
 })
-api[9].list.push({
+api[10].list.push({
     order: '1',
     desc: '微信小程序登录',
 });
-api[9].list.push({
+api[10].list.push({
     order: '2',
     desc: '管理员登录',
 });
 api.push({
+    alias: 'PrescriptionDrugController',
+    order: '12',
+    desc: '处方药品管理与查询业务',
+    link: '处方药品管理与查询业务',
+    list: []
+})
+api[11].list.push({
+    order: '1',
+    desc: '医生创建处方药品',
+});
+api[11].list.push({
+    order: '2',
+    desc: '医生删除处方药品',
+});
+api[11].list.push({
+    order: '3',
+    desc: '医生更新处方药品',
+});
+api.push({
     alias: 'dict',
-    order: '11',
+    order: '13',
     desc: '数据字典',
     link: 'dict_list',
     list: []

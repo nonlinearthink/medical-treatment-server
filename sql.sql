@@ -144,7 +144,9 @@ CREATE VIEW `org_dept` AS
 SELECT base_dept.org_id, `org_name`, `dept_id`, `dept_name`
 FROM base_dept
          JOIN base_org ON
-    base_dept.org_id = base_org.org_id;
+    base_dept.org_id = base_org.org_id
+WHERE base_dept.delete_mark = FALSE
+  AND base_org.delete_mark = FALSE;
 
 -- ----------------------------
 -- Table structure for base_doctor
@@ -162,7 +164,7 @@ CREATE TABLE `base_doctor`
     `delete_mark` boolean      DEFAULT FALSE COMMENT '软删除标记',
     PRIMARY KEY (`doctor_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 3
+  AUTO_INCREMENT = 14
   DEFAULT CHARSET = utf8mb4 COMMENT ='医生表';
 
 -- ----------------------------
@@ -170,9 +172,31 @@ CREATE TABLE `base_doctor`
 -- ----------------------------
 BEGIN;
 INSERT INTO `base_doctor`
-VALUES (1, '张三', NULL, '1', '主任医师', 13566774836, 1, FALSE);
+VALUES (1, '贺新语', 'https://profile.csdnimg.cn/6/5/0/3_qq_34912507', '1', '主任医师', 13565774836, 1, FALSE);
 INSERT INTO `base_doctor`
-VALUES (2, '李四', NULL, '3', '主治医师', 13656644771, 2, FALSE);
+VALUES (2, '温冷珍', 'https://profile.csdnimg.cn/C/6/9/3_weixin_48444868', '2', '副主任医师', 13656654771, 1, FALSE);
+INSERT INTO `base_doctor`
+VALUES (3, '孔访旋', 'https://profile.csdnimg.cn/6/8/2/3_liyuanjinglyj', '2', '副主任医师', 13256644771, 1, FALSE);
+INSERT INTO `base_doctor`
+VALUES (4, '杨思洁', NULL, '3', '主治医师', 13656644771, 1, FALSE);
+INSERT INTO `base_doctor`
+VALUES (5, '松琳怡', NULL, '3', '主治医师', 13656644771, 1, FALSE);
+INSERT INTO `base_doctor`
+VALUES (6, '芮午瑶', NULL, '3', '主治医师', 13656684771, 1, FALSE);
+INSERT INTO `base_doctor`
+VALUES (7, '羿怜阳', NULL, '3', '主治医师', 12656644771, 1, FALSE);
+INSERT INTO `base_doctor`
+VALUES (8, '桂吉玟', NULL, '4', '医师', 13656649771, 1, FALSE);
+INSERT INTO `base_doctor`
+VALUES (9, '燕乐蓉', NULL, '4', '医师', 13656644731, 1, FALSE);
+INSERT INTO `base_doctor`
+VALUES (10, '于忻慕', NULL, '4', '医师', 13656464771, 1, FALSE);
+INSERT INTO `base_doctor`
+VALUES (11, '冷代芹', NULL, '4', '医师', 13646644771, 1, FALSE);
+INSERT INTO `base_doctor`
+VALUES (12, '朱含海', NULL, '4', '医师', 13656544771, 1, FALSE);
+INSERT INTO `base_doctor`
+VALUES (13, '侯映菡', NULL, '3', '主治医师', 18656444771, 2, FALSE);
 COMMIT;
 
 -- ----------------------------
@@ -494,7 +518,7 @@ DROP TABLE IF EXISTS `consult_ask`;
 CREATE TABLE `consult_ask`
 (
     `consult_id`     int(11)       NOT NULL AUTO_INCREMENT COMMENT '问诊id',
-    `creator_id` int(11)       NOT NULL COMMENT '操作用户id',
+    `creator_id`     int(11)       NOT NULL COMMENT '操作用户id',
     `doctor_id`      int(11)       NOT NULL COMMENT '医生id',
     `patient_id`     int(11)       NOT NULL COMMENT '配药人id',
     `diagnosis_ids`  varchar(128)  NOT NULL COMMENT '确认诊断id，用英文逗号分隔',
@@ -516,18 +540,59 @@ BEGIN;
 COMMIT;
 
 -- ----------------------------
+-- View structure for consult_record_user
+-- ----------------------------
+DROP VIEW IF EXISTS `consult_record_user`;
+CREATE VIEW `consult_record_user` AS
+SELECT consult_id,
+       creator_id,
+       consult_ask.doctor_id,
+       doctor_name,
+       avatar_url,
+       dept_id,
+       dept_name,
+       question,
+       consult_status,
+       create_time,
+       accept_time,
+       finish_time
+FROM consult_ask
+         JOIN dept_doctor ON consult_ask.doctor_id = dept_doctor.doctor_id;
+
+-- ----------------------------
+-- View structure for consult_record_doctor
+-- ----------------------------
+DROP VIEW IF EXISTS `consult_record_doctor`;
+CREATE VIEW `consult_record_doctor` AS
+SELECT consult_id,
+       doctor_id,
+       consult_ask.patient_id,
+       patient_name,
+       patient_gender,
+       patient_birth_age,
+       drug_ids,
+       consult_status,
+       create_time,
+       accept_time,
+       finish_time
+FROM consult_ask
+         JOIN base_patient ON consult_ask.patient_id = base_patient.patient_id
+WHERE delete_mark = FALSE;
+
+-- ----------------------------
 -- Table structure for prescription_info
 -- ----------------------------
 DROP TABLE IF EXISTS `prescription_info`;
 CREATE TABLE `prescription_info`
 (
-    `prescription_id`     int(36)     NOT NULL AUTO_INCREMENT COMMENT '处方id',
-    `org_id`              varchar(36) NOT NULL COMMENT '机构id',
-    `consult_id`          varchar(36) NOT NULL COMMENT '问诊id',
-    `prescription_type`   char(2)     NOT NULL COMMENT '处方类型，1西药，2中成药，3中草药',
-    `doctor_id`           varchar(36) NOT NULL COMMENT '开方医生id',
-    `create_time`         datetime    NOT NULL COMMENT '开方时间',
-    `prescription_status` char(2)     NOT NULL COMMENT '处方提交状态，0未提交 ，1已提交 ',
+    `prescription_id`       int(11)      NOT NULL AUTO_INCREMENT COMMENT '处方id',
+    `org_id`                int(11)  NOT NULL COMMENT '机构id',
+    `consult_id`            int(11)  NOT NULL COMMENT '问诊id',
+    `prescription_type`     char(2)      NOT NULL COMMENT '处方类型，1西药，2中成药，3中草药',
+    `doctor_id`             int(11)      NOT NULL COMMENT '开方医生id',
+    `prescription_drug_ids` varchar(128) NOT NULL COMMENT '处方药品id，用英文逗号分隔',
+    `create_time`           datetime     NOT NULL COMMENT '开方时间',
+    `prescription_status`   char(2)      NOT NULL COMMENT '处方提交状态，0未提交 ，1已提交 ',
     PRIMARY KEY (`prescription_id`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8 COMMENT ='处方表';
@@ -544,18 +609,16 @@ COMMIT;
 DROP TABLE IF EXISTS `prescription_drug`;
 CREATE TABLE `prescription_drug`
 (
-    `prescription_drug_id` int(11)     NOT NULL AUTO_INCREMENT COMMENT '处方药品标识',
-    `prescription_id`      varchar(36) NOT NULL COMMENT '处方id',
+    `prescription_drug_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '处方药品标识',
     `drug_id`              int(11)        DEFAULT NULL COMMENT '药品id',
     `drug_frequency_id`    int(11)        DEFAULT NULL COMMENT '用药频次id',
     `drug_usage_id`        int(11)        DEFAULT NULL COMMENT '药品用法id',
     `take_days`            int(11)        DEFAULT NULL COMMENT '用药天数',
     `quantity`             decimal(10, 2) DEFAULT NULL COMMENT '药品数量',
-    `price`                decimal(10, 2) DEFAULT NULL COMMENT '单价',
-    `pack_unit`            varchar(20)    DEFAULT NULL COMMENT '包装单位',
     `group_number`         int(11)        DEFAULT NULL COMMENT '组号',
     `sort_number`          int(11)        DEFAULT NULL COMMENT '顺序号',
     `remark`               varchar(100)   DEFAULT NULL COMMENT '嘱托',
+    `creator_id`           int(11) NOT NULL COMMENT '操作用户id',
     PRIMARY KEY (`prescription_drug_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8 COMMENT ='处方药品表';
@@ -565,6 +628,30 @@ CREATE TABLE `prescription_drug`
 -- ----------------------------
 BEGIN;
 COMMIT;
+
+-- ----------------------------
+-- View structure for prescription_drug_detail
+-- ----------------------------
+DROP VIEW IF EXISTS `prescription_drug_detail`;
+CREATE VIEW `prescription_drug_detail` AS
+SELECT prescription_drug_id,
+       prescription_drug.drug_id,
+       drug_name,
+       specification,
+       pack_unit,
+       price,
+       dose,
+       dose_unit,
+       drug_frequency_id,
+       drug_usage_id,
+       take_days,
+       quantity,
+       group_number,
+       sort_number,
+       remark
+FROM prescription_drug
+         JOIN base_drug ON prescription_drug.drug_id = base_drug.drug_id
+where delete_mark = false;
 
 -- ----------------------------
 -- Procedure structure for AddGeometryColumn

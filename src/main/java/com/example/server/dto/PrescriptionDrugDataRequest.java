@@ -1,27 +1,17 @@
-package com.example.server.entity;
+package com.example.server.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
 import java.math.BigDecimal;
 
 /**
- * 处方药品表
- *
  * @author nonlinearthink
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class PrescriptionDrug {
-
-    /**
-     * 处方药品标识
-     */
-    @TableId(type = IdType.AUTO)
-    private Integer prescriptionDrugId;
+public class PrescriptionDrugDataRequest {
 
     /**
      * 药品id
@@ -62,10 +52,5 @@ public class PrescriptionDrug {
      * 嘱托
      */
     private String remark;
-
-    /**
-     * 操作用户id
-     */
-    private Integer creatorId;
 
 }

@@ -1,27 +1,18 @@
-package com.example.server.entity;
+package com.example.server.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.example.server.entity.PrescriptionDrug;
 import lombok.*;
 
-import java.sql.Timestamp;
+import java.util.List;
 
 /**
- * 处方表
- *
  * @author nonlinearthink
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class PrescriptionInfo {
-
-    /**
-     * 处方id
-     */
-    @TableId(type = IdType.AUTO)
-    private Integer prescriptionId;
+public class PrescriptionDataRequest {
 
     /**
      * 机构id
@@ -44,18 +35,13 @@ public class PrescriptionInfo {
     private Integer doctorId;
 
     /**
-     * 开方时间
+     * 处方药品列表
      */
-    private Timestamp createTime;
+    private List<PrescriptionDrug> prescriptionDrugList;
 
     /**
      * 处方提交状态，0未提交 ，1已提交
      */
     private Character prescriptionStatus;
-
-    /**
-     * 处方药品id，用英文逗号分隔
-     */
-    private String prescriptionDrugIds;
 
 }

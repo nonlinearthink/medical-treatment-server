@@ -2,9 +2,7 @@ package com.example.server.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.example.server.entity.BaseDiagnosis;
-import com.example.server.entity.BaseDrug;
-import com.example.server.entity.Photo;
+import com.example.server.entity.*;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -17,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class ConsultAskResponse {
+public class ConsultAskDataResponse {
 
     /**
      * 问诊id
@@ -26,9 +24,9 @@ public class ConsultAskResponse {
     private Integer consultId;
 
     /**
-     * 医生id
+     * 医生
      */
-    private Integer doctorId;
+    private DeptDoctor doctor;
 
     /**
      * 操作用户id
@@ -36,9 +34,9 @@ public class ConsultAskResponse {
     private Integer creatorId;
 
     /**
-     * 配药人id
+     * 配药人
      */
-    private Integer patientId;
+    private BasePatient patient;
 
     /**
      * 问题描述

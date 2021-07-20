@@ -166,6 +166,41 @@ public class DoctorController {
     }
 
     /**
+     * 根据科室id查询医生列表（分页、需携带token）
+     *
+     * @param deptId 科室id
+     * @param number 分页页号，从1开始
+     * @param size   分页大小
+     * @return 医生列表（带科室数据）
+     */
+    @SneakyThrows
+    @GetMapping("/dept")
+    public ResponseEntity<List<DeptDoctor>> queryAllDeptDoctor(@RequestParam(value = "deptId") Integer deptId,
+                                                               @RequestParam(value = "number") Integer number,
+                                                               @RequestParam(value = "size") Integer size) {
+        log.info("查询所有医生请求");
+        List<DeptDoctor> doctorList = deptDoctorMapper.selectByPageConditional(new Page<>(number, size),
+                new QueryWrapper<DeptDoctor>().eq("dept_id", deptId));
+        return ResponseEntity.ok(doctorList);
+    }
+
+    /**
+     * 通过关键字搜索所有医生
+     *
+     * @param keyword 关键字
+     * @return 诊断类型列表
+     */
+    @SneakyThrows
+    @GetMapping("/search")
+    public ResponseEntity<List<DeptDoctor>> searchAllDrug(@RequestParam(value = "keyword") String keyword) {
+        log.info("查询所有医生请求");
+        QueryWrapper<DeptDoctor> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("doctor_name", keyword);
+        List<DeptDoctor> doctorList = deptDoctorMapper.selectList(queryWrapper);
+        return ResponseEntity.ok(doctorList);
+    }
+
+    /**
      * 医生端查询绑定的医生
      *
      * @param operatorId 创建者ID，从token中获取，请携带token

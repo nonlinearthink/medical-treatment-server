@@ -1,11 +1,6 @@
 package com.example.server.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.example.server.entity.BaseDiagnosis;
 import com.example.server.entity.BaseDrug;
-import com.example.server.entity.Photo;
-import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -13,16 +8,11 @@ import java.util.List;
 /**
  * @author nonlinearthink
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class ConsultAskResponse {
+public class ConsultRecordDoctorResponse {
 
     /**
      * 问诊id
      */
-    @TableId(type = IdType.AUTO)
     private Integer consultId;
 
     /**
@@ -31,34 +21,29 @@ public class ConsultAskResponse {
     private Integer doctorId;
 
     /**
-     * 操作用户id
-     */
-    private Integer creatorId;
-
-    /**
-     * 配药人id
+     * 问诊人id
      */
     private Integer patientId;
 
     /**
-     * 问题描述
+     * 问诊人姓名
      */
-    private String question;
+    private String patientName;
 
     /**
-     * 确认诊断列表
+     * 问诊人性别，1男，2女
      */
-    private List<BaseDiagnosis> diagnosisList;
+    private Character patientGender;
+
+    /**
+     * 问诊人年龄
+     */
+    private Integer patientBirthAge;
 
     /**
      * 复诊提交药物列表
      */
     private List<BaseDrug> drugList;
-
-    /**
-     * 问诊照片列表
-     */
-    private List<Photo> photoList;
 
     /**
      * 复诊配药状态，1待接诊，2进行中，3已完成

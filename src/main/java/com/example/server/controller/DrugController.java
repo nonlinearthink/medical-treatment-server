@@ -142,7 +142,7 @@ public class DrugController {
      * @return 诊断类型列表
      */
     @SneakyThrows
-    @GetMapping("search")
+    @GetMapping("/search")
     public ResponseEntity<List<BaseDrug>> searchAllDrug(@RequestParam(value = "keyword") String keyword) {
         log.info("查询所有药品请求");
         QueryWrapper<BaseDrug> queryWrapper = new QueryWrapper<>();
