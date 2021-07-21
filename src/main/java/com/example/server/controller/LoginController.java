@@ -141,6 +141,40 @@ public class LoginController {
     }
 
     /**
+     * 医生查询是否注册过
+     *
+     * @param code wx.login()获取的code
+     * @return token证书
+     */
+    @SneakyThrows
+    @PostMapping("/miniprogram/registered")
+    public ResponseEntity<Boolean> isRegistered(@RequestParam(value = "code") String code) {
+        String appid = APPID_DOCTOR, secret = SECRET_DOCTOR;
+        // 请求openid和sessionKey
+        String uri = UriComponentsBuilder
+                .fromUriString(MINI_LOGIN_API)
+                .queryParam("appid", appid)
+                .queryParam("secret", secret)
+                .queryParam("js_code", code)
+                .queryParam("grant_type", "authorization_code")
+                .build()
+                .toUriString();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        JSONObject postResult = JSONObject.parseObject(
+                restTemplate.postForObject(uri, new HttpEntity<>(headers), String.class));
+        String openid = postResult.getString("openid");
+        QueryWrapper<BaseAccount> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mini_open_id", openid);
+        BaseAccount baseAccount = baseAccountMapper.selectOne(queryWrapper);
+        if (baseAccount == null) {
+            return ResponseEntity.ok(false);
+        } else {
+            return ResponseEntity.ok(true);
+        }
+    }
+
+    /**
      * 管理员登录
      *
      * @param adminId  管理员ID

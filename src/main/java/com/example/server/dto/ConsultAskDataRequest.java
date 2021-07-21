@@ -22,11 +22,6 @@ public class ConsultAskDataRequest {
     private Integer doctorId;
 
     /**
-     * 操作用户id
-     */
-    private Integer creatorId;
-
-    /**
      * 问诊人id
      */
     private Integer patientId;

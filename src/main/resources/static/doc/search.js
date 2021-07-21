@@ -278,6 +278,10 @@ api[10].list.push({
 });
 api[10].list.push({
     order: '2',
+    desc: '医生查询是否注册过',
+});
+api[10].list.push({
+    order: '3',
     desc: '管理员登录',
 });
 api.push({

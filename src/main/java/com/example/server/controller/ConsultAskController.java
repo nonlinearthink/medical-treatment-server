@@ -85,7 +85,7 @@ public class ConsultAskController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
         ConsultAsk consultAsk = ConsultAsk.builder()
-                .consultId(creatorId)
+                .creatorId(creatorId)
                 .doctorId(consultAskData.getDoctorId())
                 .patientId(consultAskData.getPatientId())
                 .diagnosisIds(

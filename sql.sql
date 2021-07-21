@@ -226,7 +226,8 @@ CREATE TABLE `base_patient`
 (
     `patient_id`         int(11)     NOT NULL AUTO_INCREMENT COMMENT '问诊人id',
     `patient_name`       varchar(64) NOT NULL COMMENT '问诊人姓名',
-    `patient_card_type`  char(4)     NOT NULL COMMENT '问诊人证件类型，01居民身份证 02居民户口簿 03护照 04军官证 05驾驶证 06港澳居民来往内地通行证 07台湾居民来往内地通行证 11出生证明 12港澳居民身份证 13港澳居民居住证 99其他法定有效证件',
+    `patient_card_type`  char(4)     NOT NULL COMMENT '问诊人证件类型，1居民身份证 2居民户口簿 3护照 4军官证 5驾驶证 6港澳居民来往内地通行证
+7台湾居民来往内地通行证 11出生证明 12港澳居民身份证 13港澳居民居住证 99其他法定有效证件',
     `patient_card_id`    varchar(64) NOT NULL COMMENT '问诊人证件号码',
     `patient_gender`     char(2)     NOT NULL COMMENT '问诊人性别，1男，2女',
     `patient_birth_date` datetime    NOT NULL COMMENT '问诊人出生日期',
@@ -586,8 +587,8 @@ DROP TABLE IF EXISTS `prescription_info`;
 CREATE TABLE `prescription_info`
 (
     `prescription_id`       int(11)      NOT NULL AUTO_INCREMENT COMMENT '处方id',
-    `org_id`                int(11)  NOT NULL COMMENT '机构id',
-    `consult_id`            int(11)  NOT NULL COMMENT '问诊id',
+    `org_id`                int(11)      NOT NULL COMMENT '机构id',
+    `consult_id`            int(11)      NOT NULL COMMENT '问诊id',
     `prescription_type`     char(2)      NOT NULL COMMENT '处方类型，1西药，2中成药，3中草药',
     `doctor_id`             int(11)      NOT NULL COMMENT '开方医生id',
     `prescription_drug_ids` varchar(128) NOT NULL COMMENT '处方药品id，用英文逗号分隔',
