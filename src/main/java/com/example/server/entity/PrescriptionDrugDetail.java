@@ -76,6 +76,11 @@ public class PrescriptionDrugDetail {
     private BigDecimal quantity;
 
     /**
+     * 数量
+     */
+    private Integer count;
+
+    /**
      * 组号
      */
     private Integer groupNumber;

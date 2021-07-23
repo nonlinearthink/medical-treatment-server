@@ -123,7 +123,7 @@ public class PrescriptionController {
         DeptDoctor doctor = deptDoctorMapper.selectOne(
                 new QueryWrapper<DeptDoctor>().eq("phone_no", account.getPhoneNo())
         );
-        if (doctor == null || !doctor.getDoctorId().toString().equals(prescriptionInfo.getDoctorId())) {
+        if (doctor == null || prescriptionInfo == null || !doctor.getDoctorId().equals(prescriptionInfo.getDoctorId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("权限不足");
         }
         prescriptionInfoMapper.deleteById(prescriptionId);
@@ -150,7 +150,7 @@ public class PrescriptionController {
         DeptDoctor doctor = deptDoctorMapper.selectOne(
                 new QueryWrapper<DeptDoctor>().eq("phone_no", account.getPhoneNo())
         );
-        if (doctor == null || !doctor.getDoctorId().toString().equals(prescriptionInfo.getDoctorId())) {
+        if (doctor == null || prescriptionInfo == null || !doctor.getDoctorId().equals(prescriptionInfo.getDoctorId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("权限不足");
         }
         BeanUtil.copyProperties(prescriptionData, prescriptionInfo,
@@ -162,56 +162,60 @@ public class PrescriptionController {
     /**
      * 获取电子处方
      *
-     * @param prescriptionId 处方id
+     * @param consultId 问诊id
      * @return 电子处方信息
      */
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
-    @GetMapping("/{prescriptionId}")
-    public ResponseEntity<Prescription> getPrescription(@PathVariable String prescriptionId) {
+    @GetMapping("/{consultId}")
+    public ResponseEntity<List<Prescription>> getPrescription(@PathVariable(name = "consultId") Integer consultId) {
         log.info("查询电子处方请求");
-        PrescriptionInfo prescriptionInfo = prescriptionInfoMapper.selectById(prescriptionId);
-        BaseOrg org = baseOrgMapper.selectById(prescriptionInfo.getOrgId());
-        ConsultAsk consultAsk = consultAskMapper.selectById(prescriptionInfo.getConsultId());
-        BasePatient patient = basePatientMapper.selectById(consultAsk.getPatientId());
-        DeptDoctor doctor = deptDoctorMapper.selectById(prescriptionInfo.getDoctorId());
-        List<PrescriptionDrugDetailResponse> prescriptionDrugDetailResponseList =
-                Arrays.stream(prescriptionInfo.getPrescriptionDrugIds().split(",")).map(item -> {
-                    PrescriptionDrugDetail prescriptionDrugDetail =
-                            prescriptionDrugDetailMapper.selectById(Integer.valueOf(item));
-                    return PrescriptionDrugDetailResponse.builder()
-                            .prescriptionDrugId(prescriptionDrugDetail.getPrescriptionDrugId())
-                            .drugId(prescriptionDrugDetail.getDrugId())
-                            .drugName(prescriptionDrugDetail.getDrugName())
-                            .specification(prescriptionDrugDetail.getSpecification())
-                            .packUnit(prescriptionDrugDetail.getPackUnit())
-                            .price(prescriptionDrugDetail.getPrice())
-                            .dose(prescriptionDrugDetail.getDose())
-                            .doseUnit(prescriptionDrugDetail.getDoseUnit())
-                            .drugFrequency(baseDicDrugFrequencyMapper.selectById(prescriptionDrugDetail.getDrugFrequencyId()))
-                            .drugUsage(baseDicDrugUsageMapper.selectById(prescriptionDrugDetail.getDrugUsageId()))
-                            .takeDays(prescriptionDrugDetail.getTakeDays())
-                            .quantity(prescriptionDrugDetail.getQuantity())
-                            .groupNumber(prescriptionDrugDetail.getGroupNumber())
-                            .sortNumber(prescriptionDrugDetail.getSortNumber())
-                            .remark(prescriptionDrugDetail.getRemark())
-                            .build();
-                }).collect(Collectors.toList());
-        Prescription prescription = Prescription.builder()
-                .orgId(org.getOrgId())
-                .orgName(org.getOrgName())
-                .patientName(patient.getPatientName())
-                .patientCardType(patient.getPatientCardType())
-                .patientCardId(patient.getPatientCardId())
-                .patientGender(patient.getPatientGender())
-                .patientBirthAge(patient.getPatientBirthAge())
-                .patientPhoneNo(patient.getPatientPhoneNo())
-                .doctorId(doctor.getDoctorId())
-                .doctorName(doctor.getDoctorName())
-                .prescriptionDrugList(prescriptionDrugDetailResponseList)
-                .createTime(prescriptionInfo.getCreateTime())
-                .build();
-        return ResponseEntity.ok(prescription);
+        List<PrescriptionInfo> prescriptionInfoList = prescriptionInfoMapper.selectList(
+                new QueryWrapper<PrescriptionInfo>().eq("consult_id", consultId));
+        List<Prescription> prescriptionList = prescriptionInfoList.stream().map(item -> {
+            BaseOrg org = baseOrgMapper.selectById(item.getOrgId());
+            ConsultAsk consultAsk = consultAskMapper.selectById(item.getConsultId());
+            BasePatient patient = basePatientMapper.selectById(consultAsk.getPatientId());
+            DeptDoctor doctor = deptDoctorMapper.selectById(item.getDoctorId());
+            List<PrescriptionDrugDetailResponse> prescriptionDrugDetailResponseList =
+                    Arrays.stream(item.getPrescriptionDrugIds().split(",")).map(item2 -> {
+                        PrescriptionDrugDetail prescriptionDrugDetail =
+                                prescriptionDrugDetailMapper.selectById(Integer.valueOf(item2));
+                        return PrescriptionDrugDetailResponse.builder()
+                                .prescriptionDrugId(prescriptionDrugDetail.getPrescriptionDrugId())
+                                .drugId(prescriptionDrugDetail.getDrugId())
+                                .drugName(prescriptionDrugDetail.getDrugName())
+                                .specification(prescriptionDrugDetail.getSpecification())
+                                .packUnit(prescriptionDrugDetail.getPackUnit())
+                                .price(prescriptionDrugDetail.getPrice())
+                                .dose(prescriptionDrugDetail.getDose())
+                                .doseUnit(prescriptionDrugDetail.getDoseUnit())
+                                .drugFrequency(baseDicDrugFrequencyMapper.selectById(prescriptionDrugDetail.getDrugFrequencyId()))
+                                .drugUsage(baseDicDrugUsageMapper.selectById(prescriptionDrugDetail.getDrugUsageId()))
+                                .takeDays(prescriptionDrugDetail.getTakeDays())
+                                .quantity(prescriptionDrugDetail.getQuantity())
+                                .groupNumber(prescriptionDrugDetail.getGroupNumber())
+                                .sortNumber(prescriptionDrugDetail.getSortNumber())
+                                .remark(prescriptionDrugDetail.getRemark())
+                                .count(prescriptionDrugDetail.getCount())
+                                .build();
+                    }).collect(Collectors.toList());
+            return Prescription.builder()
+                    .orgId(org.getOrgId())
+                    .orgName(org.getOrgName())
+                    .patientName(patient.getPatientName())
+                    .patientCardType(patient.getPatientCardType())
+                    .patientCardId(patient.getPatientCardId())
+                    .patientGender(patient.getPatientGender())
+                    .patientBirthAge(patient.getPatientBirthAge())
+                    .patientPhoneNo(patient.getPatientPhoneNo())
+                    .doctorId(doctor.getDoctorId())
+                    .doctorName(doctor.getDoctorName())
+                    .prescriptionDrugList(prescriptionDrugDetailResponseList)
+                    .createTime(item.getCreateTime())
+                    .build();
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(prescriptionList);
     }
 
 }

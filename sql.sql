@@ -620,6 +620,7 @@ CREATE TABLE `prescription_drug`
     `quantity`             decimal(10, 2) DEFAULT NULL COMMENT '药品数量',
     `group_number`         int(11)        DEFAULT NULL COMMENT '组号',
     `sort_number`          int(11)        DEFAULT NULL COMMENT '顺序号',
+    `count`                int(6)         DEFAULT 1 COMMENT '数量',
     `remark`               varchar(100)   DEFAULT NULL COMMENT '嘱托',
     `creator_id`           int(11) NOT NULL COMMENT '操作用户id',
     PRIMARY KEY (`prescription_drug_id`)

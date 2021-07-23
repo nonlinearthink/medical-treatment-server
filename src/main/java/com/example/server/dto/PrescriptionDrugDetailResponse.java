@@ -90,4 +90,9 @@ public class PrescriptionDrugDetailResponse {
      */
     private String remark;
 
+    /**
+     * 数量
+     */
+    private Integer count;
+
 }

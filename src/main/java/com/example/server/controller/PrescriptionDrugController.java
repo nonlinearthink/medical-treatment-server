@@ -68,6 +68,7 @@ public class PrescriptionDrugController {
                 .sortNumber(prescriptionDrugData.getSortNumber())
                 .remark(prescriptionDrugData.getRemark())
                 .creatorId(creatorId)
+                .count(prescriptionDrugData.getCount())
                 .build();
         prescriptionDrugMapper.insert(prescriptionDrug);
         return ResponseEntity.ok(prescriptionDrug);

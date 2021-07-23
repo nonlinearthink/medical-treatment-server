@@ -2,7 +2,6 @@ package com.example.server.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.server.dto.*;
@@ -133,7 +132,7 @@ public class ConsultAskController {
     @Transactional(rollbackFor = Exception.class)
     @DeleteMapping("/{consultId}")
     public ResponseEntity<String> deleteConsultAsk(@RequestAttribute(name = "user_id") Integer operatorId,
-                                                   @PathVariable(name = "consultId") String consultId) {
+                                                   @PathVariable(name = "consultId") Integer consultId) {
         log.info("删除问诊记录请求");
         ConsultAsk consultAsk = consultAskMapper.selectById(consultId);
         if (!consultAsk.getCreatorId().equals(operatorId)) {
@@ -208,7 +207,7 @@ public class ConsultAskController {
     @Transactional(rollbackFor = Exception.class)
     @PutMapping("/{consultId}/consult-status")
     public ResponseEntity<String> updateConsultAskByDoctor(@RequestAttribute(name = "user_id") Integer operatorId,
-                                                           @PathVariable(name = "consultId") String consultId,
+                                                           @PathVariable(name = "consultId") Integer consultId,
                                                            @RequestParam(name = "status") Integer status) {
         log.info("更新问诊记录请求(医生)");
         BaseAccount account = baseAccountMapper.selectById(operatorId);
@@ -309,7 +308,7 @@ public class ConsultAskController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @GetMapping("/{consultId}")
-    public ResponseEntity<ConsultAskDataResponse> queryConsultAskData(@PathVariable String consultId) {
+    public ResponseEntity<ConsultAskDataResponse> queryConsultAskData(@PathVariable(name = "consultId") Integer consultId) {
         log.info("查询完整问诊记录请求");
         ConsultAsk consultAsk = consultAskMapper.selectById(consultId);
         List<BaseDiagnosis> diagnosisList =

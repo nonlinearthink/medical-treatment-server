@@ -59,6 +59,11 @@ public class PrescriptionDrug {
     private Integer sortNumber;
 
     /**
+     * 数量
+     */
+    private Integer count;
+
+    /**
      * 嘱托
      */
     private String remark;
