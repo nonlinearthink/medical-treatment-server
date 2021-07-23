@@ -212,7 +212,8 @@ SELECT `doctor_id`,
        `org_id`,
        `org_name`,
        base_doctor.dept_id,
-       `dept_name`
+       `dept_name`,
+       `phone_no`
 FROM base_doctor
          JOIN org_dept ON
     base_doctor.dept_id = org_dept.dept_id
@@ -547,6 +548,7 @@ DROP VIEW IF EXISTS `consult_record_user`;
 CREATE VIEW `consult_record_user` AS
 SELECT consult_id,
        creator_id,
+       patient_id,
        consult_ask.doctor_id,
        doctor_name,
        avatar_url,

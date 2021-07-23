@@ -58,4 +58,9 @@ public class DeptDoctor {
      */
     private String deptName;
 
+    /**
+     * 手机号码
+     */
+    private String phoneNo;
+
 }

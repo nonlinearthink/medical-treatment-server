@@ -1,6 +1,7 @@
 package com.example.server.dto;
 
 import com.example.server.entity.BaseDrug;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -8,6 +9,10 @@ import java.util.List;
 /**
  * @author nonlinearthink
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class ConsultRecordDoctorResponse {
 
     /**

@@ -21,4 +21,8 @@ public class MiniProgramLoginResponse {
      */
     private Integer userId;
 
+    /**
+     * 是否成功
+     */
+    private String message;
 }

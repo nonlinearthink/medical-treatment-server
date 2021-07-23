@@ -2,11 +2,10 @@ package com.example.server.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.server.dto.ConsultAskDataRequest;
-import com.example.server.dto.ConsultAskDataResponse;
-import com.example.server.dto.ConsultAskResponse;
+import com.example.server.dto.*;
 import com.example.server.entity.*;
 import com.example.server.mapper.*;
 import lombok.SneakyThrows;
@@ -155,10 +154,10 @@ public class ConsultAskController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @PutMapping("/{consultId}")
-    public ResponseEntity<String> updateConsultAsk(@RequestAttribute(name = "user_id") Integer operatorId,
-                                                   @PathVariable(name = "consultId") Integer consultId,
-                                                   @RequestBody ConsultAskDataRequest consultAskData) {
-        log.info("更新问诊记录请求");
+    public ResponseEntity<String> updateConsultAskByUser(@RequestAttribute(name = "user_id") Integer operatorId,
+                                                         @PathVariable(name = "consultId") Integer consultId,
+                                                         @RequestBody ConsultAskDataRequest consultAskData) {
+        log.info("更新问诊记录请求(用户)");
         ConsultAsk consultAsk = consultAskMapper.selectById(consultId);
         if (!consultAsk.getCreatorId().equals(operatorId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("权限不足");
@@ -198,6 +197,44 @@ public class ConsultAskController {
     }
 
     /**
+     * 医生更新问诊记录
+     *
+     * @param operatorId 操作者ID，从token中获取，请携带token
+     * @param consultId  问诊记录id
+     * @param status     复诊配药状态，1待接诊，2进行中，3已完成
+     * @return 成功或者失败信息
+     */
+    @SneakyThrows
+    @Transactional(rollbackFor = Exception.class)
+    @PutMapping("/{consultId}/consult-status")
+    public ResponseEntity<String> updateConsultAskByDoctor(@RequestAttribute(name = "user_id") Integer operatorId,
+                                                           @PathVariable(name = "consultId") String consultId,
+                                                           @RequestParam(name = "status") Integer status) {
+        log.info("更新问诊记录请求(医生)");
+        BaseAccount account = baseAccountMapper.selectById(operatorId);
+        DeptDoctor doctor = deptDoctorMapper.selectOne(
+                new QueryWrapper<DeptDoctor>().eq("phone_no", account.getPhoneNo())
+        );
+        ConsultAsk consultAsk = consultAskMapper.selectById(consultId);
+        if (!consultAsk.getDoctorId().equals(doctor.getDoctorId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("权限不足");
+        }
+        if (status == 2) {
+            consultAsk.setConsultStatus(2);
+            consultAsk.setAcceptTime(new Timestamp(System.currentTimeMillis()));
+            consultAskMapper.updateById(consultAsk);
+            return ResponseEntity.ok("成功");
+        } else if (status == 3) {
+            consultAsk.setConsultStatus(3);
+            consultAsk.setFinishTime(new Timestamp(System.currentTimeMillis()));
+            consultAskMapper.updateById(consultAsk);
+            return ResponseEntity.ok("成功");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("参数不符合要求");
+        }
+    }
+
+    /**
      * 用户查询自己的所有问诊记录数据（分页）
      *
      * @param operatorId 操作者ID，从token中获取，请携带token
@@ -208,14 +245,22 @@ public class ConsultAskController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @GetMapping("/record/user")
-    public ResponseEntity<List<ConsultRecordUser>> queryAllConsultRecordByUser(@RequestAttribute(name = "user_id") Integer operatorId,
-                                                                               @RequestParam(value = "number") Integer number,
-                                                                               @RequestParam(value = "size") Integer size) {
+    public ResponseEntity<List<ConsultRecordUserResponse>> queryAllConsultRecordByUser(
+            @RequestAttribute(name = "user_id") Integer operatorId,
+            @RequestParam(value = "number") Integer number,
+            @RequestParam(value = "size") Integer size) {
         log.info("查询所有问诊记录请求");
-        List<ConsultRecordUser> consultRecordList;
+        List<ConsultRecordUserResponse> consultRecordList;
         QueryWrapper<ConsultRecordUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("creator_id", operatorId);
-        consultRecordList = consultRecordUserMapper.selectByPageConditional(new Page<>(number, size), queryWrapper);
+        consultRecordList =
+                consultRecordUserMapper.selectByPageConditional(new Page<>(number, size), queryWrapper).stream().map(item -> {
+                    ConsultRecordUserResponse response = new ConsultRecordUserResponse();
+                    BeanUtil.copyProperties(item, response, CopyOptions.create().setIgnoreNullValue(true));
+                    response.setPatientName(basePatientMapper.selectById(item.getPatientId()).getPatientName());
+                    return response;
+                }).collect(Collectors.toList());
+
         return ResponseEntity.ok(consultRecordList);
     }
 
@@ -230,9 +275,10 @@ public class ConsultAskController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @GetMapping("/record/doctor")
-    public ResponseEntity<List<ConsultRecordDoctor>> queryAllConsultRecordByDoctor(@RequestAttribute(name = "user_id") Integer operatorId,
-                                                                                   @RequestParam(value = "number") Integer number,
-                                                                                   @RequestParam(value = "size") Integer size) {
+    public ResponseEntity<List<ConsultRecordDoctorResponse>> queryAllConsultRecordByDoctor(
+            @RequestAttribute(name = "user_id") Integer operatorId,
+            @RequestParam(value = "number") Integer number,
+            @RequestParam(value = "size") Integer size) {
         log.info("查询所有问诊记录请求");
         BaseAccount account = baseAccountMapper.selectById(operatorId);
         DeptDoctor doctor = deptDoctorMapper.selectOne(
@@ -245,7 +291,13 @@ public class ConsultAskController {
         QueryWrapper<ConsultRecordDoctor> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("doctor_id", doctor.getDoctorId());
         consultRecordList = consultRecordDoctorMapper.selectByPageConditional(new Page<>(number, size), queryWrapper);
-        return ResponseEntity.ok(consultRecordList);
+        return ResponseEntity.ok(consultRecordList.stream().map(item -> {
+            ConsultRecordDoctorResponse response = new ConsultRecordDoctorResponse();
+            BeanUtil.copyProperties(item, response, new CopyOptions().setIgnoreNullValue(true).setIgnoreProperties(
+                    "drugIds"));
+            response.setDrugList(Arrays.stream(item.getDrugIds().split(",")).map(baseDrugMapper::selectById).collect(Collectors.toList()));
+            return response;
+        }).collect(Collectors.toList()));
     }
 
     /**
@@ -274,6 +326,10 @@ public class ConsultAskController {
                 .diagnosisList(diagnosisList)
                 .drugList(drugList)
                 .photoList(photoList)
+                .consultStatus(consultAsk.getConsultStatus())
+                .createTime(consultAsk.getCreateTime())
+                .acceptTime(consultAsk.getAcceptTime())
+                .finishTime(consultAsk.getFinishTime())
                 .build();
         return ResponseEntity.ok(consultAskDataResponse);
     }

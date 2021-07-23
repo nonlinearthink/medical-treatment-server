@@ -118,6 +118,9 @@ public class LoginController {
         BaseAccount baseAccount = baseAccountMapper.selectOne(queryWrapper);
         System.out.println(baseAccount);
         if (baseAccount == null) {
+            if ("doctor".equals(userType) && rawData.getPhoneNo() == null) {
+                return ResponseEntity.ok(MiniProgramLoginResponse.builder().message("未填写手机号").build());
+            }
             baseAccount = BaseAccount.builder()
                     .nickName(rawData.getNickName())
                     .avatarUrl(rawData.getAvatarUrl())
@@ -141,21 +144,34 @@ public class LoginController {
     }
 
     /**
-     * 医生查询是否注册过
+     * 微信小程序登录
      *
-     * @param code wx.login()获取的code
+     * @param code     wx.login()获取的code
+     * @param rawData  用户信息
+     * @param userType 用户类型，可选值为user和doctor
      * @return token证书
      */
     @SneakyThrows
-    @PostMapping("/miniprogram/registered")
-    public ResponseEntity<Boolean> isRegistered(@RequestParam(value = "code") String code) {
-        String appid = APPID_DOCTOR, secret = SECRET_DOCTOR;
+    @Transactional(rollbackFor = Exception.class)
+    @PostMapping("/weblogin/{userType}")
+    public ResponseEntity<MiniProgramLoginResponse> webLogin(@RequestParam(value = "code") String code,
+                                                                     @RequestBody MiniProgramLoginRawData rawData,
+                                                                     @PathVariable String userType) {
+        // 动态绑定appid和secret
+        log.info("医生web端登录请求");
+        String appid, secret;
+         if ("doctor".equals(userType)) {
+            appid = APPID_DOCTOR;
+            secret = SECRET_DOCTOR;
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
+        }
         // 请求openid和sessionKey
         String uri = UriComponentsBuilder
                 .fromUriString(MINI_LOGIN_API)
                 .queryParam("appid", appid)
                 .queryParam("secret", secret)
-                .queryParam("js_code", code)
+                .queryParam("code", code)
                 .queryParam("grant_type", "authorization_code")
                 .build()
                 .toUriString();
@@ -164,14 +180,37 @@ public class LoginController {
         JSONObject postResult = JSONObject.parseObject(
                 restTemplate.postForObject(uri, new HttpEntity<>(headers), String.class));
         String openid = postResult.getString("openid");
+        String sessionKey = postResult.getString("session_key");
+        log.info("openid: " + openid + "    session_key: " + sessionKey);
+        // 判断用户是否已经存在
         QueryWrapper<BaseAccount> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("mini_open_id", openid);
+        queryWrapper.eq("mini_open_id", openid).eq("user_type", userTypeMap.get(userType));
         BaseAccount baseAccount = baseAccountMapper.selectOne(queryWrapper);
+        System.out.println(baseAccount);
         if (baseAccount == null) {
-            return ResponseEntity.ok(false);
-        } else {
-            return ResponseEntity.ok(true);
+            if ("doctor".equals(userType) && rawData.getPhoneNo() == null) {
+                return ResponseEntity.ok(MiniProgramLoginResponse.builder().message("未填写手机号").build());
+            }
+            baseAccount = BaseAccount.builder()
+                    .nickName(rawData.getNickName())
+                    .avatarUrl(rawData.getAvatarUrl())
+                    .userType(userTypeMap.get(userType))
+                    .miniOpenId(openid)
+                    .phoneNo(rawData.getPhoneNo())
+                    .createTime(new Timestamp(System.currentTimeMillis()))
+                    .build();
+            baseAccountMapper.insert(baseAccount);
+            log.info("新用户注册成功: " + baseAccount.getUserId());
         }
+        // 生成token
+        Map<String, String> claims = new HashMap<>(2);
+        claims.put("session_key", sessionKey);
+        claims.put("user_id", baseAccount.getUserId().toString());
+        String token = JwtUtil.createToken(claims);
+        log.info("生成token: " + token);
+        // 返回结果
+        authRedisTemplate.opsForValue().set("wechat@" + baseAccount.getUserId().toString(), token);
+        return ResponseEntity.ok(MiniProgramLoginResponse.builder().token(token).userId(baseAccount.getUserId()).build());
     }
 
     /**

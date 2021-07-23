@@ -78,14 +78,18 @@ api[2].list.push({
 });
 api[2].list.push({
     order: '4',
-    desc: '用户查询自己的所有问诊记录数据（分页）',
+    desc: '医生更新问诊记录',
 });
 api[2].list.push({
     order: '5',
-    desc: '医生查询所有问诊记录数据（分页）',
+    desc: '用户查询自己的所有问诊记录数据（分页）',
 });
 api[2].list.push({
     order: '6',
+    desc: '医生查询所有问诊记录数据（分页）',
+});
+api[2].list.push({
+    order: '7',
     desc: '查询完整问诊信息',
 });
 api.push({
@@ -278,7 +282,7 @@ api[10].list.push({
 });
 api[10].list.push({
     order: '2',
-    desc: '医生查询是否注册过',
+    desc: '微信小程序登录',
 });
 api[10].list.push({
     order: '3',

@@ -1,19 +1,17 @@
-package com.example.server.entity;
+package com.example.server.dto;
 
 import lombok.*;
 
 import java.sql.Timestamp;
 
 /**
- * 问诊记录-用户端
- *
  * @author nonlinearthink
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class ConsultRecordUser {
+public class ConsultRecordUserResponse {
 
     /**
      * 问诊id
@@ -34,6 +32,11 @@ public class ConsultRecordUser {
      * 问诊人id
      */
     private Integer patientId;
+
+    /**
+     * 问诊人姓名
+     */
+    private String patientName;
 
     /**
      * 医生姓名
