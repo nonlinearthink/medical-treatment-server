@@ -652,7 +652,8 @@ SELECT prescription_drug_id,
        quantity,
        group_number,
        sort_number,
-       remark
+       remark,
+       count
 FROM prescription_drug
          JOIN base_drug ON prescription_drug.drug_id = base_drug.drug_id
 where delete_mark = false;

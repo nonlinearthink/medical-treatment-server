@@ -2,11 +2,14 @@ package com.example.server.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.server.dto.PrescriptionDrugDataRequest;
+import com.example.server.dto.PrescriptionDrugDataResponse;
 import com.example.server.entity.BaseAccount;
 import com.example.server.entity.PrescriptionDrug;
-import com.example.server.mapper.BaseAccountMapper;
-import com.example.server.mapper.PrescriptionDrugMapper;
+import com.example.server.entity.PrescriptionDrugDetail;
+import com.example.server.mapper.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,11 +37,20 @@ public class PrescriptionDrugController {
 
     private final PrescriptionDrugMapper prescriptionDrugMapper;
     private final BaseAccountMapper baseAccountMapper;
+    private final PrescriptionDrugDetailMapper prescriptionDrugDetailMapper;
+    private final BaseDicDrugFrequencyMapper drugFrequencyMapper;
+    private final BaseDicDrugUsageMapper drugUsageMapper;
 
     public PrescriptionDrugController(PrescriptionDrugMapper prescriptionDrugMapper,
-                                      BaseAccountMapper baseAccountMapper) {
+                                      BaseAccountMapper baseAccountMapper,
+                                      PrescriptionDrugDetailMapper prescriptionDrugDetailMapper,
+                                      BaseDicDrugFrequencyMapper drugFrequencyMapper,
+                                      BaseDicDrugUsageMapper drugUsageMapper) {
         this.prescriptionDrugMapper = prescriptionDrugMapper;
         this.baseAccountMapper = baseAccountMapper;
+        this.prescriptionDrugDetailMapper = prescriptionDrugDetailMapper;
+        this.drugFrequencyMapper = drugFrequencyMapper;
+        this.drugUsageMapper = drugUsageMapper;
     }
 
     /**
@@ -118,6 +130,30 @@ public class PrescriptionDrugController {
         prescriptionDrugMapper.updateById(prescriptionDrug);
         prescriptionDrugMapper.deleteById(prescriptionDrugId);
         return ResponseEntity.ok("更新处方药品成功");
+    }
+
+    /**
+     * 医生获取处方药品
+     *
+     * @param operatorId         操作者ID，从token中获取，请携带token
+     * @param prescriptionDrugId 处方药品id
+     * @return 处方药品信息
+     */
+    @SneakyThrows
+    @Transactional(rollbackFor = Exception.class)
+    @GetMapping("/{prescriptionDrugId}")
+    public ResponseEntity<PrescriptionDrugDataResponse> getPrescriptionDrugDetail(@RequestAttribute(name = "user_id") Integer operatorId,
+                                                                                  @PathVariable String prescriptionDrugId) {
+        log.info("查询处方药品请求");
+        PrescriptionDrugDetail prescriptionDrugDetail =
+                prescriptionDrugDetailMapper.selectOne(new QueryWrapper<PrescriptionDrugDetail>().eq(
+                        "prescription_drug_id", prescriptionDrugId));
+        PrescriptionDrugDataResponse response = new PrescriptionDrugDataResponse();
+        BeanUtil.copyProperties(prescriptionDrugDetail, response,
+                new CopyOptions().setIgnoreNullValue(true).setIgnoreProperties("drugFrequencyId", "drugUsageId"));
+        response.setDrugFrequency(drugFrequencyMapper.selectById(prescriptionDrugDetail.getDrugFrequencyId()));
+        response.setDrugUsage(drugUsageMapper.selectById(prescriptionDrugDetail.getDrugUsageId()));
+        return ResponseEntity.ok(response);
     }
 
 }

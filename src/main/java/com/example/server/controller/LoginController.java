@@ -144,7 +144,7 @@ public class LoginController {
     }
 
     /**
-     * 微信小程序登录
+     * web医生端登录(正式)
      *
      * @param code     wx.login()获取的code
      * @param rawData  用户信息
@@ -153,14 +153,14 @@ public class LoginController {
      */
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
-    @PostMapping("/weblogin/{userType}")
+    @PostMapping("/web/{userType}")
     public ResponseEntity<MiniProgramLoginResponse> webLogin(@RequestParam(value = "code") String code,
-                                                                     @RequestBody MiniProgramLoginRawData rawData,
-                                                                     @PathVariable String userType) {
+                                                             @RequestBody MiniProgramLoginRawData rawData,
+                                                             @PathVariable String userType) {
         // 动态绑定appid和secret
         log.info("医生web端登录请求");
         String appid, secret;
-         if ("doctor".equals(userType)) {
+        if ("doctor".equals(userType)) {
             appid = APPID_DOCTOR;
             secret = SECRET_DOCTOR;
         } else {
@@ -211,6 +211,25 @@ public class LoginController {
         // 返回结果
         authRedisTemplate.opsForValue().set("wechat@" + baseAccount.getUserId().toString(), token);
         return ResponseEntity.ok(MiniProgramLoginResponse.builder().token(token).userId(baseAccount.getUserId()).build());
+    }
+
+    /**
+     * web医生端登录(无自动注册功能，仅供临时登录)
+     *
+     * @param phoneNo 手机号
+     * @return token证书
+     */
+    @SneakyThrows
+    @Transactional(rollbackFor = Exception.class)
+    @PostMapping("/phone")
+    public ResponseEntity<MiniProgramLoginResponse> phoneLogin(@RequestParam(value = "phone") String phoneNo) {
+        BaseAccount account = baseAccountMapper.selectOne(new QueryWrapper<BaseAccount>().eq("phone_no", phoneNo));
+        // 生成token
+        Map<String, String> claims = new HashMap<>(1);
+        claims.put("user_id", account.getUserId().toString());
+        String token = JwtUtil.createToken(claims);
+        log.info("生成token: " + token);
+        return ResponseEntity.ok(MiniProgramLoginResponse.builder().token(token).userId(account.getUserId()).build());
     }
 
     /**

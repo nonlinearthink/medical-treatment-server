@@ -1,5 +1,6 @@
 package com.example.server.dto;
 
+import com.example.server.entity.BaseDiagnosis;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -13,6 +14,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class Prescription {
+
+    /**
+     * 处方id
+     */
+    private Integer prescriptionId;
 
     /**
      * 机构id
@@ -38,6 +44,16 @@ public class Prescription {
      * 问诊人证件号码
      */
     private String patientCardId;
+
+    /**
+     * 问题描述
+     */
+    private String question;
+
+    /**
+     * 确认诊断列表
+     */
+    private List<BaseDiagnosis> diagnosisList;
 
     /**
      * 问诊人性别，1男，2女

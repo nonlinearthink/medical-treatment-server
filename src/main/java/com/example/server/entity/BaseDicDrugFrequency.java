@@ -31,9 +31,4 @@ public class BaseDicDrugFrequency {
      */
     private String drugFrequencyNameAbbr;
 
-    /**
-     * 软删除标记
-     */
-    private Boolean deleteMark;
-
 }

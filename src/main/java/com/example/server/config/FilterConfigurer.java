@@ -18,7 +18,8 @@ public class FilterConfigurer {
         FilterRegistrationBean<Filter> bean = new FilterRegistrationBean<>();
         bean.setFilter(getAuthFilter());
         bean.addUrlPatterns("/api/admin/*", "/api/org/*", "/api/dept/*", "/api/doctor/*", "/api/patient/*",
-                "/api/diagnosis/*", "/api/drug/*", "/api/consult-ask/*");
+                "/api/diagnosis/*", "/api/drug/*", "/api/consult-ask/*", "/api/prescription-drug/*",
+                "/api/prescription/*");
         bean.setName("AuthFilter");
         return bean;
     }

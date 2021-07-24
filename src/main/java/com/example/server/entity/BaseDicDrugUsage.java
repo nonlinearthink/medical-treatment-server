@@ -26,9 +26,4 @@ public class BaseDicDrugUsage {
      */
     private String drugUsageName;
 
-    /**
-     * 软删除标记
-     */
-    private Boolean deleteMark;
-
 }

@@ -2,6 +2,7 @@ package com.example.server.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.server.dto.*;
@@ -46,6 +47,7 @@ public class ConsultAskController {
     private final BaseDiagnosisMapper baseDiagnosisMapper;
     private final BaseDrugMapper baseDrugMapper;
     private final PhotoMapper photoMapper;
+    private final MessageController messageController;
 
     @Autowired
     public ConsultAskController(ConsultAskMapper consultAskMapper, BaseAccountMapper baseAccountMapper,
@@ -53,7 +55,7 @@ public class ConsultAskController {
                                 ConsultRecordDoctorMapper consultRecordDoctorMapper,
                                 DeptDoctorMapper deptDoctorMapper, BasePatientMapper basePatientMapper,
                                 BaseDiagnosisMapper baseDiagnosisMapper, BaseDrugMapper baseDrugMapper,
-                                PhotoMapper photoMapper) {
+                                PhotoMapper photoMapper, MessageController messageController) {
         this.consultAskMapper = consultAskMapper;
         this.baseAccountMapper = baseAccountMapper;
         this.consultRecordUserMapper = consultRecordUserMapper;
@@ -63,6 +65,7 @@ public class ConsultAskController {
         this.baseDiagnosisMapper = baseDiagnosisMapper;
         this.baseDrugMapper = baseDrugMapper;
         this.photoMapper = photoMapper;
+        this.messageController = messageController;
     }
 
     /**
@@ -189,7 +192,6 @@ public class ConsultAskController {
                             .map(item -> item.getPhotoId().toString())
                             .collect(Collectors.joining(","))
             );
-
         }
         consultAskMapper.updateById(consultAsk);
         return ResponseEntity.ok("更新问诊记录成功");
@@ -218,15 +220,24 @@ public class ConsultAskController {
         if (!consultAsk.getDoctorId().equals(doctor.getDoctorId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("权限不足");
         }
+        BasePatient patient = basePatientMapper.selectById(consultAsk.getPatientId());
         if (status == 2) {
             consultAsk.setConsultStatus(2);
             consultAsk.setAcceptTime(new Timestamp(System.currentTimeMillis()));
             consultAskMapper.updateById(consultAsk);
+            System.out.println("发送消息");
+            System.out.println(JSONObject.toJSONString(messageController.sendMessageToUser(UserMessage.builder().doctor(doctor.getDoctorName()).content(
+                    "您的问诊已在进行").status("进行中").time(new Timestamp(System.currentTimeMillis())).build(),
+                    patient.getCreatorId())));
             return ResponseEntity.ok("成功");
         } else if (status == 3) {
             consultAsk.setConsultStatus(3);
             consultAsk.setFinishTime(new Timestamp(System.currentTimeMillis()));
             consultAskMapper.updateById(consultAsk);
+            System.out.println("发送消息");
+            System.out.println(JSONObject.toJSONString(messageController.sendMessageToUser(UserMessage.builder().doctor(doctor.getDoctorName()).content(
+                    "您的问诊已经完成").status("已完成").time(new Timestamp(System.currentTimeMillis())).build(),
+                    patient.getCreatorId())));
             return ResponseEntity.ok("成功");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("参数不符合要求");
@@ -311,12 +322,21 @@ public class ConsultAskController {
     public ResponseEntity<ConsultAskDataResponse> queryConsultAskData(@PathVariable(name = "consultId") Integer consultId) {
         log.info("查询完整问诊记录请求");
         ConsultAsk consultAsk = consultAskMapper.selectById(consultId);
-        List<BaseDiagnosis> diagnosisList =
-                Arrays.stream(consultAsk.getDiagnosisIds().split(",")).map(item -> baseDiagnosisMapper.selectById(Integer.valueOf(item))).collect(Collectors.toList());
-        List<BaseDrug> drugList =
-                Arrays.stream(consultAsk.getDrugIds().split(",")).map(item -> baseDrugMapper.selectById(Integer.valueOf(item))).collect(Collectors.toList());
-        List<Photo> photoList =
-                Arrays.stream(consultAsk.getPhotoIds().split(",")).map(item -> photoMapper.selectById(Integer.valueOf(item))).collect(Collectors.toList());
+        List<BaseDiagnosis> diagnosisList = null;
+        if (consultAsk.getDiagnosisIds() != null && !"".equals(consultAsk.getDiagnosisIds())) {
+            diagnosisList =
+                    Arrays.stream(consultAsk.getDiagnosisIds().split(",")).map(item -> baseDiagnosisMapper.selectById(Integer.valueOf(item))).collect(Collectors.toList());
+        }
+        List<BaseDrug> drugList = null;
+        if (consultAsk.getDrugIds() != null && !"".equals(consultAsk.getDrugIds())) {
+            drugList =
+                    Arrays.stream(consultAsk.getDrugIds().split(",")).map(item -> baseDrugMapper.selectById(Integer.valueOf(item))).collect(Collectors.toList());
+        }
+        List<Photo> photoList = null;
+        if (consultAsk.getPhotoIds() != null && !"".equals(consultAsk.getPhotoIds())) {
+            photoList =
+                    Arrays.stream(consultAsk.getPhotoIds().split(",")).map(item -> photoMapper.selectById(Integer.valueOf(item))).collect(Collectors.toList());
+        }
         ConsultAskDataResponse consultAskDataResponse = ConsultAskDataResponse.builder()
                 .consultId(consultAsk.getConsultId())
                 .doctor(deptDoctorMapper.selectById(consultAsk.getDoctorId()))

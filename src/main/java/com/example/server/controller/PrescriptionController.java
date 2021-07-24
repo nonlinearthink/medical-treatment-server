@@ -2,6 +2,7 @@ package com.example.server.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.server.dto.Prescription;
 import com.example.server.dto.PrescriptionDataRequest;
@@ -47,13 +48,15 @@ public class PrescriptionController {
     private final PrescriptionDrugDetailMapper prescriptionDrugDetailMapper;
     private final BaseDicDrugFrequencyMapper baseDicDrugFrequencyMapper;
     private final BaseDicDrugUsageMapper baseDicDrugUsageMapper;
+    private final BaseDiagnosisMapper baseDiagnosisMapper;
 
     public PrescriptionController(PrescriptionInfoMapper prescriptionInfoMapper, BaseAccountMapper baseAccountMapper,
                                   DeptDoctorMapper deptDoctorMapper, BaseOrgMapper baseOrgMapper,
                                   BasePatientMapper basePatientMapper, ConsultAskMapper consultAskMapper,
                                   PrescriptionDrugDetailMapper prescriptionDrugDetailMapper,
                                   BaseDicDrugFrequencyMapper baseDicDrugFrequencyMapper,
-                                  BaseDicDrugUsageMapper baseDicDrugUsageMapper) {
+                                  BaseDicDrugUsageMapper baseDicDrugUsageMapper,
+                                  BaseDiagnosisMapper baseDiagnosisMapper) {
         this.prescriptionInfoMapper = prescriptionInfoMapper;
         this.baseAccountMapper = baseAccountMapper;
         this.deptDoctorMapper = deptDoctorMapper;
@@ -63,6 +66,7 @@ public class PrescriptionController {
         this.prescriptionDrugDetailMapper = prescriptionDrugDetailMapper;
         this.baseDicDrugFrequencyMapper = baseDicDrugFrequencyMapper;
         this.baseDicDrugUsageMapper = baseDicDrugUsageMapper;
+        this.baseDiagnosisMapper = baseDiagnosisMapper;
     }
 
     /**
@@ -176,11 +180,15 @@ public class PrescriptionController {
             BaseOrg org = baseOrgMapper.selectById(item.getOrgId());
             ConsultAsk consultAsk = consultAskMapper.selectById(item.getConsultId());
             BasePatient patient = basePatientMapper.selectById(consultAsk.getPatientId());
-            DeptDoctor doctor = deptDoctorMapper.selectById(item.getDoctorId());
+            DeptDoctor doctor =
+                    deptDoctorMapper.selectOne(new QueryWrapper<DeptDoctor>().eq("doctor_id", item.getDoctorId()));
+            System.out.println("doctor");
+            System.out.println(JSONObject.toJSONString(doctor));
             List<PrescriptionDrugDetailResponse> prescriptionDrugDetailResponseList =
                     Arrays.stream(item.getPrescriptionDrugIds().split(",")).map(item2 -> {
                         PrescriptionDrugDetail prescriptionDrugDetail =
-                                prescriptionDrugDetailMapper.selectById(Integer.valueOf(item2));
+                                prescriptionDrugDetailMapper.selectOne(new QueryWrapper<PrescriptionDrugDetail>().eq(
+                                        "prescription_drug_id", Integer.valueOf(item2)));
                         return PrescriptionDrugDetailResponse.builder()
                                 .prescriptionDrugId(prescriptionDrugDetail.getPrescriptionDrugId())
                                 .drugId(prescriptionDrugDetail.getDrugId())
@@ -200,8 +208,12 @@ public class PrescriptionController {
                                 .count(prescriptionDrugDetail.getCount())
                                 .build();
                     }).collect(Collectors.toList());
+            System.out.println(prescriptionDrugDetailResponseList);
             return Prescription.builder()
+                    .prescriptionId(item.getPrescriptionId())
                     .orgId(org.getOrgId())
+                    .question(consultAsk.getQuestion())
+                    .diagnosisList(Arrays.stream(consultAsk.getDiagnosisIds().split(",")).map(baseDiagnosisMapper::selectById).collect(Collectors.toList()))
                     .orgName(org.getOrgName())
                     .patientName(patient.getPatientName())
                     .patientCardType(patient.getPatientCardType())
