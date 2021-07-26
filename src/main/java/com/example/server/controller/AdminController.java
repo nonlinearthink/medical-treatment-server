@@ -1,8 +1,12 @@
 package com.example.server.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.server.dto.MaskedAdmin;
+import com.example.server.dto.PageResponse;
 import com.example.server.entity.BaseAdmin;
+import com.example.server.entity.BaseDept;
 import com.example.server.mapper.BaseAdminMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -44,38 +50,46 @@ public class AdminController {
      * @param creatorId 创建者ID，从token中获取，请携带token，需是超级管理员
      * @param adminId   新管理员ID
      * @param password  新管理员密码
-     * @return 成功或者失败信息
+     * @param adminType 管理员类型
+     * @return 创建完的管理员
      */
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("")
-    public ResponseEntity<String> createAdmin(@RequestAttribute(name = "admin_id") String creatorId,
-                                           @RequestParam(value = "adminId") String adminId,
-                                           @RequestParam(value = "password") String password) {
+    public ResponseEntity<MaskedAdmin> createAdmin(@RequestAttribute(name = "admin_id") String creatorId,
+                                                   @RequestParam(value = "adminId") String adminId,
+                                                   @RequestParam(value = "password") String password,
+                                                   @RequestParam(value = "adminType") Character adminType) {
         log.info("添加管理员请求");
         BaseAdmin creator = baseAdminMapper.selectById(creatorId);
         if (!creator.getAdminType().equals('1')) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("权限不足");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
         BaseAdmin admin = baseAdminMapper.selectById(adminId);
         if (admin == null) {
             admin = BaseAdmin.builder()
                     .adminId(adminId)
                     .password(DigestUtils.md5DigestAsHex(password.getBytes()))
-                    .adminType('2')
+                    .adminType(adminType)
                     .createTime(new Timestamp(System.currentTimeMillis()))
                     .build();
             baseAdminMapper.insert(admin);
         } else if (admin.getDeleteMark()) {
             admin.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
-            admin.setAdminType('2');
+            admin.setAdminType(adminType);
             admin.setCreateTime(new Timestamp(System.currentTimeMillis()));
             admin.setDeleteMark(false);
             baseAdminMapper.updateById(admin);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("管理员已存在");
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
         }
-        return ResponseEntity.ok("创建成功");
+        return ResponseEntity.ok(
+                MaskedAdmin.builder()
+                        .adminId(admin.getAdminId())
+                        .createTime(admin.getCreateTime())
+                        .adminType(admin.getAdminType())
+                        .build()
+        );
     }
 
     /**
@@ -201,19 +215,25 @@ public class AdminController {
      */
     @SneakyThrows
     @GetMapping("")
-    public ResponseEntity<List<MaskedAdmin>> queryAllAdmin(@RequestParam(value = "number") Integer number,
-                                                           @RequestParam(value = "size") Integer size) {
+    public ResponseEntity<PageResponse<List<MaskedAdmin>>> queryAllAdmin(@RequestParam(value = "number") Integer number,
+                                                                         @RequestParam(value = "size") Integer size) {
         log.info("查询所有管理员请求");
-        List<BaseAdmin> adminList = baseAdminMapper.selectByPage(new Page<>(number, size));
-        List<MaskedAdmin> maskedAdminList = adminList.stream().map(
+        IPage<BaseAdmin> queryResult = baseAdminMapper.selectByPageConditional(new Page<>(number, size),
+                new QueryWrapper<BaseAdmin>().eq("delete_mark", false));
+        List<MaskedAdmin> maskedAdminList = queryResult.getRecords().stream().map(
                 item -> MaskedAdmin.builder()
                         .adminId(item.getAdminId())
                         .adminType(item.getAdminType())
                         .createTime(item.getCreateTime())
-                        .deleteMark(item.getDeleteMark())
                         .build()
         ).collect(Collectors.toList());
-        return ResponseEntity.ok(maskedAdminList);
+        return ResponseEntity.ok(
+                PageResponse
+                        .<List<MaskedAdmin>>builder()
+                        .data(maskedAdminList)
+                        .total(queryResult.getTotal())
+                        .success(true)
+                        .build());
     }
 
 }

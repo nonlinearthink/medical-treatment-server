@@ -226,8 +226,10 @@ public class LoginController {
         BaseAccount account = baseAccountMapper.selectOne(new QueryWrapper<BaseAccount>().eq("phone_no", phoneNo));
         // 生成token
         Map<String, String> claims = new HashMap<>(1);
+        claims.put("session_key", "fake");
         claims.put("user_id", account.getUserId().toString());
         String token = JwtUtil.createToken(claims);
+        authRedisTemplate.opsForValue().set("wechat@" + account.getUserId().toString(), token);
         log.info("生成token: " + token);
         return ResponseEntity.ok(MiniProgramLoginResponse.builder().token(token).userId(account.getUserId()).build());
     }

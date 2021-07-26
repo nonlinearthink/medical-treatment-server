@@ -31,9 +31,4 @@ public class MaskedAdmin {
      */
     private Timestamp createTime;
 
-    /**
-     * 软删除标记
-     */
-    private Boolean deleteMark;
-
 }

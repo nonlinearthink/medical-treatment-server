@@ -31,6 +31,7 @@ public class AuthFilter implements Filter {
         log.info("携带的token: " + token);
         if (token != null&& !token.equals("")) {
             Map<String, String> data = JwtUtil.verifyToken(token);
+            System.out.println(authRedisTemplate);
             if (data.get("user_id") != null && Objects.equals(authRedisTemplate.opsForValue().get("wechat@" + data.get("user_id")), token)) {
                 log.info("token解析结果: user_id " + data.get("user_id") + " session_key " + data.get("session_key"));
                 req.setAttribute("user_id", data.get("user_id"));

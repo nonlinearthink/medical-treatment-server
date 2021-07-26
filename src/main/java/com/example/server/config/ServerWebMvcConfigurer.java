@@ -32,6 +32,6 @@ public class ServerWebMvcConfigurer implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(corsInterceptor).addPathPatterns("/**");
-        WebMvcConfigurer.super.addInterceptors(registry);
+//        WebMvcConfigurer.super.addInterceptors(registry);
     }
 }

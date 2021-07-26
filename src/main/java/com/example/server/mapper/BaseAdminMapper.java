@@ -2,14 +2,13 @@ package com.example.server.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.server.entity.BaseAdmin;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-
-import java.util.List;
 
 /**
  * @author nonlinearthink
@@ -24,7 +23,7 @@ public interface BaseAdminMapper extends BaseMapper<BaseAdmin> {
      * @return 管理员列表
      */
     @Select("select * from base_admin")
-    List<BaseAdmin> selectByPage(Page<BaseAdmin> page);
+    IPage<BaseAdmin> selectByPage(Page<BaseAdmin> page);
 
     /**
      * 分页按条件查找管理员列表
@@ -34,6 +33,7 @@ public interface BaseAdminMapper extends BaseMapper<BaseAdmin> {
      * @return 管理员列表
      */
     @Select("select * from base_admin ${ew.customSqlSegment}")
-    List<BaseAdmin> selectByPageConditional(Page<BaseAdmin> page, @Param(Constants.WRAPPER) Wrapper<BaseAdmin> wrapper);
+    IPage<BaseAdmin> selectByPageConditional(Page<BaseAdmin> page,
+                                             @Param(Constants.WRAPPER) Wrapper<BaseAdmin> wrapper);
 
 }

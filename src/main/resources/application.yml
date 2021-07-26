@@ -15,3 +15,14 @@ mini-program:
   doctor:
     appid: wxbcb506cbd018cd24
     secret: 1327e89037a3ee04c1ddb9b54f9ae803
+management:
+  health:
+    redis:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

@@ -3,8 +3,10 @@ package com.example.server.controller;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.server.dto.DiagnosisDataRequest;
+import com.example.server.dto.PageResponse;
 import com.example.server.entity.BaseDiagnosis;
 import com.example.server.mapper.BaseDiagnosisMapper;
 import lombok.SneakyThrows;
@@ -15,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 诊断类型管理和查询业务
@@ -44,7 +48,7 @@ public class DiagnosisController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("")
-    public ResponseEntity<BaseDiagnosis> createDiagnosis(@RequestAttribute(name = "admin_id") Integer creatorId,
+    public ResponseEntity<BaseDiagnosis> createDiagnosis(@RequestAttribute(name = "admin_id") String creatorId,
                                                          @RequestBody DiagnosisDataRequest diagnosisData) {
         log.info("添加诊断类型请求");
         if (creatorId == null) {
@@ -78,7 +82,7 @@ public class DiagnosisController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @DeleteMapping("/{diagnosisId}")
-    public ResponseEntity<String> deleteDiagnosis(@RequestAttribute(name = "admin_id") Integer operatorId,
+    public ResponseEntity<String> deleteDiagnosis(@RequestAttribute(name = "admin_id") String operatorId,
                                                   @PathVariable(value = "diagnosisId") Integer diagnosisId) {
         log.info("删除诊断类型请求");
         if (operatorId == null) {
@@ -134,8 +138,32 @@ public class DiagnosisController {
     public ResponseEntity<List<BaseDiagnosis>> queryAllDiagnosis(@RequestParam(value = "number") Integer number,
                                                                  @RequestParam(value = "size") Integer size) {
         log.info("查询所有诊断类型请求");
-        List<BaseDiagnosis> diagnosisList = baseDiagnosisMapper.selectByPage(new Page<>(number, size));
-        return ResponseEntity.ok(diagnosisList);
+        IPage<BaseDiagnosis> queryResult = baseDiagnosisMapper.selectByPageConditional(new Page<>(number, size),
+                new QueryWrapper<BaseDiagnosis>().eq("delete_mark", false));
+        return ResponseEntity.ok(queryResult.getRecords());
+    }
+
+    /**
+     * 管理员查询诊断类型列表v2
+     *
+     * @param number 分页页号，从1开始
+     * @param size   分页大小
+     * @return 诊断类型列表
+     */
+    @SneakyThrows
+    @GetMapping("/v2")
+    public ResponseEntity<PageResponse<List<BaseDiagnosis>>> queryAllDiagnosis2(@RequestParam(value = "number") Integer number,
+                                                                                @RequestParam(value = "size") Integer size) {
+        log.info("查询所有诊断类型请求v2");
+        IPage<BaseDiagnosis> queryResult = baseDiagnosisMapper.selectByPageConditional(new Page<>(number, size),
+                new QueryWrapper<BaseDiagnosis>().eq("delete_mark", false));
+        return ResponseEntity.ok(
+                PageResponse
+                        .<List<BaseDiagnosis>>builder()
+                        .data(queryResult.getRecords())
+                        .total(queryResult.getTotal())
+                        .success(true)
+                        .build());
     }
 
 }

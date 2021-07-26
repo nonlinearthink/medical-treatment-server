@@ -3,8 +3,10 @@ package com.example.server.controller;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.server.dto.DoctorDataRequest;
+import com.example.server.dto.PageResponse;
 import com.example.server.entity.BaseAccount;
 import com.example.server.entity.BaseDoctor;
 import com.example.server.entity.DeptDoctor;
@@ -63,7 +65,7 @@ public class DoctorController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("")
-    public ResponseEntity<BaseDoctor> createDoctor(@RequestAttribute(name = "admin_id") Integer creatorId,
+    public ResponseEntity<BaseDoctor> createDoctor(@RequestAttribute(name = "admin_id") String creatorId,
                                                    @RequestBody DoctorDataRequest doctorData) {
         log.info("添加医生请求");
         if (creatorId == null) {
@@ -76,6 +78,7 @@ public class DoctorController {
             doctor = BaseDoctor.builder()
                     .doctorName(doctorData.getDoctorName())
                     .avatarUrl(doctorData.getAvatarUrl())
+                    .deptId(doctorData.getDeptId())
                     .levelCode(doctorData.getLevelCode())
                     .levelName(levelMap.get(doctorData.getLevelCode()))
                     .phoneNo(doctorData.getPhoneNo())
@@ -105,7 +108,7 @@ public class DoctorController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @DeleteMapping("/{doctorId}")
-    public ResponseEntity<String> deleteDoctor(@RequestAttribute(name = "admin_id") Integer operatorId,
+    public ResponseEntity<String> deleteDoctor(@RequestAttribute(name = "admin_id") String operatorId,
                                                @PathVariable(value = "doctorId") Integer doctorId) {
         log.info("删除医生请求");
         if (operatorId == null) {
@@ -132,7 +135,7 @@ public class DoctorController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @PutMapping("/{doctorId}")
-    public ResponseEntity<String> updateDoctor(@RequestAttribute(name = "admin_id") Integer operatorId,
+    public ResponseEntity<String> updateDoctor(@RequestAttribute(name = "admin_id") String operatorId,
                                                @PathVariable(value = "doctorId") Integer doctorId,
                                                @RequestBody DoctorDataRequest doctorData) {
         log.info("更新医生请求");
@@ -161,8 +164,30 @@ public class DoctorController {
     public ResponseEntity<List<DeptDoctor>> queryAllDeptDoctor(@RequestParam(value = "number") Integer number,
                                                                @RequestParam(value = "size") Integer size) {
         log.info("查询所有医生请求");
-        List<DeptDoctor> doctorList = deptDoctorMapper.selectByPage(new Page<>(number, size));
-        return ResponseEntity.ok(doctorList);
+        IPage<DeptDoctor> queryResult = deptDoctorMapper.selectByPage(new Page<>(number, size));
+        return ResponseEntity.ok(queryResult.getRecords());
+    }
+
+    /**
+     * 查询医生列表v2（分页、需携带token）
+     *
+     * @param number 分页页号，从1开始
+     * @param size   分页大小
+     * @return 医生列表（带科室数据）
+     */
+    @SneakyThrows
+    @GetMapping("/v2")
+    public ResponseEntity<PageResponse<List<DeptDoctor>>> queryAllDeptDoctor2(@RequestParam(value = "number") Integer number,
+                                                                              @RequestParam(value = "size") Integer size) {
+        log.info("查询所有医生请求v2");
+        IPage<DeptDoctor> queryResult = deptDoctorMapper.selectByPage(new Page<>(number, size));
+        return ResponseEntity.ok(
+                PageResponse
+                        .<List<DeptDoctor>>builder()
+                        .success(true)
+                        .total(queryResult.getTotal())
+                        .data(queryResult.getRecords())
+                        .build());
     }
 
     /**
@@ -179,9 +204,9 @@ public class DoctorController {
                                                                @RequestParam(value = "number") Integer number,
                                                                @RequestParam(value = "size") Integer size) {
         log.info("查询所有医生请求");
-        List<DeptDoctor> doctorList = deptDoctorMapper.selectByPageConditional(new Page<>(number, size),
+        IPage<DeptDoctor> queryResult = deptDoctorMapper.selectByPageConditional(new Page<>(number, size),
                 new QueryWrapper<DeptDoctor>().eq("dept_id", deptId));
-        return ResponseEntity.ok(doctorList);
+        return ResponseEntity.ok(queryResult.getRecords());
     }
 
     /**
@@ -227,7 +252,7 @@ public class DoctorController {
     @GetMapping("/{doctorId}")
     public ResponseEntity<DeptDoctor> queryDeptDoctorById(@PathVariable(value = "doctorId") Integer doctorId) {
         log.info("根据doctorId查询DeptDoctor");
-        DeptDoctor doctor = deptDoctorMapper.selectById(doctorId);
+        DeptDoctor doctor = deptDoctorMapper.selectOne(new QueryWrapper<DeptDoctor>().eq("doctor_id", doctorId));
         return ResponseEntity.ok(doctor);
     }
 

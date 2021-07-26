@@ -225,10 +225,6 @@ public class ConsultAskController {
             consultAsk.setConsultStatus(2);
             consultAsk.setAcceptTime(new Timestamp(System.currentTimeMillis()));
             consultAskMapper.updateById(consultAsk);
-            System.out.println("发送消息");
-            System.out.println(JSONObject.toJSONString(messageController.sendMessageToUser(UserMessage.builder().doctor(doctor.getDoctorName()).content(
-                    "您的问诊已在进行").status("进行中").time(new Timestamp(System.currentTimeMillis())).build(),
-                    patient.getCreatorId())));
             return ResponseEntity.ok("成功");
         } else if (status == 3) {
             consultAsk.setConsultStatus(3);

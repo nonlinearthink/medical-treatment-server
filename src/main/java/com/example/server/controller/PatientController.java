@@ -155,6 +155,7 @@ public class PatientController {
         log.info("查询所有问诊人请求");
         QueryWrapper<BasePatient> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("creator_id", operatorId);
+        queryWrapper.eq("delete_mark",false);
         List<BasePatient> patientList = basePatientMapper.selectByPageConditional(new Page<>(number, size),
                 queryWrapper);
         return ResponseEntity.ok(patientList);

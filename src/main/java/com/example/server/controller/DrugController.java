@@ -3,8 +3,10 @@ package com.example.server.controller;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.server.dto.DrugDataRequest;
+import com.example.server.dto.PageResponse;
 import com.example.server.entity.BaseDrug;
 import com.example.server.mapper.BaseDrugMapper;
 import lombok.SneakyThrows;
@@ -44,7 +46,7 @@ public class DrugController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("")
-    public ResponseEntity<BaseDrug> createDrug(@RequestAttribute(name = "admin_id") Integer creatorId,
+    public ResponseEntity<BaseDrug> createDrug(@RequestAttribute(name = "admin_id") String creatorId,
                                                @RequestBody DrugDataRequest drugData) {
         log.info("添加药品请求");
         if (creatorId == null) {
@@ -76,7 +78,7 @@ public class DrugController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @DeleteMapping("/{drugId}")
-    public ResponseEntity<String> deleteDrug(@RequestAttribute(name = "admin_id") Integer operatorId,
+    public ResponseEntity<String> deleteDrug(@RequestAttribute(name = "admin_id") String operatorId,
                                              @PathVariable String drugId) {
         log.info("删除药品请求");
         if (operatorId == null) {
@@ -103,7 +105,7 @@ public class DrugController {
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     @PutMapping("/{drugId}")
-    public ResponseEntity<String> updateDrug(@RequestAttribute(name = "admin_id") Integer operatorId,
+    public ResponseEntity<String> updateDrug(@RequestAttribute(name = "admin_id") String operatorId,
                                              @PathVariable String drugId, @RequestBody DrugDataRequest drugData) {
         log.info("更新药品请求");
         if (operatorId == null) {
@@ -131,8 +133,33 @@ public class DrugController {
     public ResponseEntity<List<BaseDrug>> queryAllDrug(@RequestParam(value = "number") Integer number,
                                                        @RequestParam(value = "size") Integer size) {
         log.info("查询所有药品请求");
-        List<BaseDrug> drugList = baseDrugMapper.selectByPage(new Page<>(number, size));
-        return ResponseEntity.ok(drugList);
+        IPage<BaseDrug> queryResult = baseDrugMapper.selectByPageConditional(new Page<>(number, size),
+                new QueryWrapper<BaseDrug>().eq("delete_mark", false));
+        return ResponseEntity.ok(queryResult.getRecords());
+    }
+
+    /**
+     * 查询所有药品列表v2
+     *
+     * @param number 分页页号，从1开始
+     * @param size   分页大小
+     * @return 诊断类型列表
+     */
+    @SneakyThrows
+    @GetMapping("/v2")
+    public ResponseEntity<PageResponse<List<BaseDrug>>> queryAllDrug2(@RequestParam(value = "number") Integer number,
+                                                                      @RequestParam(value = "size") Integer size) {
+        log.info("查询所有药品请求");
+        IPage<BaseDrug> queryResult = baseDrugMapper.selectByPageConditional(new Page<>(number, size),
+                new QueryWrapper<BaseDrug>().eq("delete_mark", false));
+        return ResponseEntity.ok(
+                PageResponse
+                        .<List<BaseDrug>>builder()
+                        .data(queryResult.getRecords())
+                        .success(true)
+                        .total(queryResult.getTotal())
+                        .build()
+        );
     }
 
     /**

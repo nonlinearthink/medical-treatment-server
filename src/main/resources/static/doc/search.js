@@ -24,6 +24,10 @@ api[0].list.push({
 });
 api[0].list.push({
     order: '5',
+    desc: '查询所有药品列表v2',
+});
+api[0].list.push({
+    order: '6',
     desc: '通过关键字搜索所有药品列表',
 });
 api.push({
@@ -113,7 +117,15 @@ api[3].list.push({
 });
 api[3].list.push({
     order: '4',
+    desc: '查询机构',
+});
+api[3].list.push({
+    order: '5',
     desc: '查询所有机构（分页、需携带token）',
+});
+api[3].list.push({
+    order: '6',
+    desc: '查询所有机构v2（分页、需携带token）',
 });
 api.push({
     alias: 'PrescriptionController',
@@ -180,6 +192,10 @@ api[6].list.push({
     order: '4',
     desc: '管理员查询诊断类型列表',
 });
+api[6].list.push({
+    order: '5',
+    desc: '管理员查询诊断类型列表v2',
+});
 api.push({
     alias: 'MessageController',
     order: '8',
@@ -220,18 +236,22 @@ api[8].list.push({
 });
 api[8].list.push({
     order: '5',
-    desc: '根据科室id查询医生列表（分页、需携带token）',
+    desc: '查询医生列表v2（分页、需携带token）',
 });
 api[8].list.push({
     order: '6',
-    desc: '通过关键字搜索所有医生',
+    desc: '根据科室id查询医生列表（分页、需携带token）',
 });
 api[8].list.push({
     order: '7',
-    desc: '医生端查询绑定的医生',
+    desc: '通过关键字搜索所有医生',
 });
 api[8].list.push({
     order: '8',
+    desc: '医生端查询绑定的医生',
+});
+api[8].list.push({
+    order: '9',
     desc: '根据ID查询医生数据（需携带token）',
 });
 api.push({
@@ -256,6 +276,10 @@ api[9].list.push({
 api[9].list.push({
     order: '4',
     desc: '查询所有科室（分页、需携带token）',
+});
+api[9].list.push({
+    order: '5',
+    desc: '查询所有科室v2（分页、需携带token）',
 });
 api.push({
     alias: 'PatientController',

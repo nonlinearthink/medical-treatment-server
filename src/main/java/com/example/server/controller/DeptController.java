@@ -1,7 +1,9 @@
 package com.example.server.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.server.dto.PageResponse;
 import com.example.server.entity.BaseDept;
 import com.example.server.mapper.BaseDeptMapper;
 import lombok.SneakyThrows;
@@ -12,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 科室管理与查询业务
@@ -130,14 +134,44 @@ public class DeptController {
                                                        @RequestParam(value = "number") Integer number,
                                                        @RequestParam(value = "size") Integer size) {
         log.info("查询所有科室请求");
-        List<BaseDept> deptList;
         QueryWrapper<BaseDept> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("delete_mark", false);
         if (orgId != null) {
             queryWrapper.eq("org_id", orgId);
         }
-        deptList = baseDeptMapper.selectByPageConditional(new Page<>(number, size), queryWrapper);
-        return ResponseEntity.ok(deptList);
+        IPage<BaseDept> queryResult = baseDeptMapper.selectByPageConditional(new Page<>(number, size),
+                queryWrapper);
+        return ResponseEntity.ok(queryResult.getRecords());
+    }
+
+    /**
+     * 查询所有科室v2（分页、需携带token）
+     *
+     * @param orgId  机构id，不为空的时候请求这个机构下的所有科室，为空请求所有科室
+     * @param number 分页页号，从1开始
+     * @param size   分页大小
+     * @return 科室列表数据
+     */
+    @SneakyThrows
+    @GetMapping("/v2")
+    public ResponseEntity<PageResponse<List<BaseDept>>> queryAllDept2(@RequestParam(value = "orgId",
+            required = false) Integer orgId,
+                                                                      @RequestParam(value = "number") Integer number,
+                                                                      @RequestParam(value = "size") Integer size) {
+        log.info("查询所有科室请求v2");
+        QueryWrapper<BaseDept> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("delete_mark", false);
+        if (orgId != null) {
+            queryWrapper.eq("org_id", orgId);
+        }
+        IPage<BaseDept> queryResult = baseDeptMapper.selectByPageConditional(new Page<>(number, size), queryWrapper);
+        return ResponseEntity.ok(
+                PageResponse
+                        .<List<BaseDept>>builder()
+                        .data(queryResult.getRecords())
+                        .success(true)
+                        .total(queryResult.getTotal()).build()
+        );
     }
 
 }

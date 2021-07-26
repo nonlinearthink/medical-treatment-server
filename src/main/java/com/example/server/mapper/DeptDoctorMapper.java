@@ -2,6 +2,7 @@ package com.example.server.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.server.entity.DeptDoctor;
@@ -24,7 +25,7 @@ public interface DeptDoctorMapper extends BaseMapper<DeptDoctor> {
      * @return 医生列表
      */
     @Select("select * from dept_doctor")
-    List<DeptDoctor> selectByPage(Page<DeptDoctor> page);
+    IPage<DeptDoctor> selectByPage(Page<DeptDoctor> page);
 
     /**
      * 分页按条件查找医生列表
@@ -34,7 +35,7 @@ public interface DeptDoctorMapper extends BaseMapper<DeptDoctor> {
      * @return 医生列表
      */
     @Select("select * from dept_doctor ${ew.customSqlSegment}")
-    List<DeptDoctor> selectByPageConditional(Page<DeptDoctor> page,
+    IPage<DeptDoctor> selectByPageConditional(Page<DeptDoctor> page,
                                              @Param(Constants.WRAPPER) Wrapper<DeptDoctor> wrapper);
 
 }
