@@ -1,4 +1,4 @@
-# 部署环境
+# 开发环境
 
 version: "3"
 services:
@@ -9,7 +9,7 @@ services:
       - MYSQL_ROOT_PASSWORD=27564138
     volumes:
       # 使用前先更改路径，格式：[本地路径]:[容器内路径(一般不用改)]
-      - /app/guyunwenchuang/mysql/data:/var/lib/mysql
+      - /Users/nonlinearthink/Server/mysql/data:/var/lib/mysql
     ports:
       - "3306:3306"
     restart: always
@@ -22,10 +22,10 @@ services:
       - LANG=en_US.UTF-8
     volumes:
       # 使用前先更改路径，格式：[本地路径]:[容器内路径(一般不用改)]
-      - /root/redis.conf:/usr/local/etc/redis/redis.conf
-      - /app/guyunwenchuang/redis/data:/data
-      - /app/guyunwenchuang/redis/logs:/logs
+      - /Users/nonlinearthink/Server/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - /Users/nonlinearthink/Server/redis/data:/data
+      - /Users/nonlinearthink/Server/redis/logs:/logs
     ports:
       - "6379:6379"
-    command: redis-server /usr/local/etc/redis/redis.conf --requirepass lncqekZ0Nk
+    command: redis-server /usr/local/etc/redis/redis.conf --requirepass 603879
     restart: always
